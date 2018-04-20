@@ -1,1 +1,1 @@
-# mmis-planning-frontend
+# MMIS Planning frontend
