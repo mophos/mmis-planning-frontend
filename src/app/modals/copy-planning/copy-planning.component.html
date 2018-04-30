@@ -1,0 +1,30 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false" [clrModalSize]="'md'">
+  <h3 class="modal-title">คัดลอกรายการจากปีที่ผ่านมา</h3>
+  <div class="modal-body">
+    <form>
+      <section class="form-block">
+        <div class="form-group">
+          <label class="required" for="yearCopy">คัดลอกจากแผน</label>
+          <div class="select" style="width:100%">
+            <select name="yearCopy" [(ngModel)]="headerIdForCopy">
+              <option> กรุณาเลือก...</option>
+              <option *ngFor="let p of plannings" [value]="p.planning_hdr_id">{{ p.planning_name }} {{ p.planning_year | toThaiDate: 'Y' }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="percentCopy">อัตราเพิ่มของแผนจัดซื้อ (%)</label>
+          <input type="text" class="form-control" name="percentCopy" [(ngModel)]="percentForCopy">
+        </div>
+      </section>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="processCopyPlanning()" [disabled]="!headerIdForCopy">
+      ตกลง
+    </button>
+    <button type="button" class="btn btn-danger-outline" (click)="opened = false">
+      ยกเลิก
+    </button>
+  </div>
+</clr-modal>

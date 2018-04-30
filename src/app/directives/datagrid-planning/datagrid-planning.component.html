@@ -1,0 +1,131 @@
+<clr-datagrid (clrDgRefresh)="refreshPlanning($event)" [(clrDgSelected)]="itemSelected" style="padding-top: 5px;">
+  <clr-dg-column [style.width.px]="170">ชื่อสินค้า</clr-dg-column>
+  <clr-dg-column [style.width.px]="150">หน่วย</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">ราคาต่อหน่วย</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">อัตราการใช้ {{planningYear-3 | toThaiDate: 'Y'}}</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">อัตราการใช้ {{planningYear-2 | toThaiDate: 'Y'}}</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">อัตราการใช้ {{planningYear-1 | toThaiDate: 'Y'}}</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">ประมาณการใช้ {{planningYear | toThaiDate: 'Y'}}</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">ยอดคงคลัง</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">ประมาณการซื้อ</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">ไตรมาส 1</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">ไตรมาส 2</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">ไตรมาส 3</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">ไตรมาส 4</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">จำนวนรวม</clr-dg-column>
+  <clr-dg-column [style.width.px]="150">มูลค่ารวม</clr-dg-column>
+  <clr-dg-column [style.width.px]="150">รูปแบบการจัดซื้อ</clr-dg-column>
+  <clr-dg-column [style.width.px]="100">Freeze</clr-dg-column>
+  <clr-dg-column [style.width.px]="100"></clr-dg-column>
+  <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+
+  <clr-dg-row class="newLine">
+    <clr-dg-cell>
+      <pm-search-generic #searchGeneric (onSelect)="onSelecteGeneric($event)" [disabled]="!planningYear || this.selectedIsEdit==='Y'"></pm-search-generic>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <pm-select-unit #selectUnit (onSelect)="onChangeUnit($event)" [genericId]="selectedGenericId"></pm-select-unit>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId" [(ngModel)]="selectedCost"
+        wmNumberOnly placeholder="0">
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">
+      {{ selectedRate3Year | number: '1.0-0' }}
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">
+      {{ selectedRate2Year | number: '1.0-0' }}
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">
+      {{ selectedRate1Year | number: '1.0-0' }}
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">
+      {{ selectedEstimateQty | number: '1.0-0' }}
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">
+      {{ selectedStockQty | number: '1.0-0' }}
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">
+      {{ selectedEstimateBuyQty | number: '1.0-0' }}
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId || disableQ1"
+        [(ngModel)]="selectedQ1" wmNumberOnly placeholder="0" (input)="onInputQty()">
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId || disableQ2"
+        [(ngModel)]="selectedQ2" wmNumberOnly placeholder="0" (input)="onInputQty()">
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId || disableQ3"
+        [(ngModel)]="selectedQ3" wmNumberOnly placeholder="0" (input)="onInputQty()">
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId || disableQ4"
+        [(ngModel)]="selectedQ4" wmNumberOnly placeholder="0" (input)="onInputQty()">
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">
+      {{ selectedQty | number: '1.0-0' }}
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">
+      {{ selectedAmount | number: '1.2-2' }}
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <pm-select-bidtype #selectBidType (onSelect)="onChangeBidType($event)" [selectedId]="selectedBidTypeId"></pm-select-bidtype>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <div class="toggle-switch">
+        <input type="checkbox" id="isFreeze" [(ngModel)]="selectedFreeze">
+        <label for="isFreeze"></label>
+      </div>
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: center;">
+      <div class="btn-group btn-primary">
+        <button class="btn btn-success btn-sm wm-small-btn" [disabled]="!selectedGenericId || !selectedUnitGenericId || !selectedCost || !selectedBidTypeId"
+          (click)="addItem()">
+          <clr-icon shape="floppy" size="16"></clr-icon>
+        </button>
+        <button class="btn btn-danger btn-sm wm-small-btn" (click)="clearForm()">
+          <clr-icon shape="refresh" size="16"></clr-icon>
+        </button>
+      </div>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-row *ngFor="let p of plannings" [clrDgItem]="p" [ngClass]="{'editLine': p.is_edit==='Y'}">
+    <clr-dg-cell>{{p.generic_name}}</clr-dg-cell>
+    <clr-dg-cell>{{p.unit_desc}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.unit_cost | number: '1.2-2'}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.rate_3_year | number: '1.0-0'}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.rate_2_year | number: '1.0-0'}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.rate_1_year | number: '1.0-0'}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.estimate_qty | number: '1.0-0'}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.stock_qty | number: '1.0-0'}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.estimate_buy | number: '1.0-0'}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.q1 | number}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.q2 | number}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.q3 | number}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.q4 | number}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.qty | number}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.amount | number: '1.2-2'}}</clr-dg-cell>
+    <clr-dg-cell>{{p.bid_type_name}}</clr-dg-cell>
+    <clr-dg-cell class="text-center">
+      <clr-icon *ngIf="p.freeze === 'Y'" shape="check" size="20" class="is-success"></clr-icon>
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: center;">
+      <div class="btn-group btn-primary">
+        <button [disabled]="p.is_edit==='Y'" class="btn btn-success btn-sm wm-small-btn" (click)="editItem(p)">
+          <clr-icon shape="note" size="16"></clr-icon>
+        </button>
+        <button [disabled]="p.is_edit==='Y'" class="btn btn-danger btn-sm wm-small-btn" (click)="deleteItem(p)">
+          <clr-icon shape="trash" size="16"></clr-icon>
+        </button>
+      </div>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} จาก {{pagination.totalItems}} รายการ
+    <clr-dg-pagination #pagination [clrDgPageSize]="perPage" [clrDgTotalItems]="total"></clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
