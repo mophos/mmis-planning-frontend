@@ -1,0 +1,60 @@
+<nav class="breadcrumb">
+  <a class="breadcrumb-item" href="javascript://" routerLink="/admin">หน้าหลัก</a>
+  <span class="breadcrumb-item active">แหล่งงบประมาณ</span>
+</nav>
+
+<button class="btn btn-success btn-sm btn-icon" style="margin-top: 5px;" (click)="addBudgetSource()">
+  + เพิ่มรายการ
+</button>
+
+<clr-datagrid style="height: 85%;">
+  <clr-dg-column [clrDgField]="'bgsource_name'">แหล่งงบประมาณ</clr-dg-column>
+  <clr-dg-column [style.width.px]="150">สถานะการใช้งาน</clr-dg-column>
+  <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+  <clr-dg-row *clrDgItems="let s of budgetSources" [clrDgItem]="t">
+    <clr-dg-action-overflow>
+      <button class="action-item" (click)="editBudgetSource(s)">แก้ไขข้อมูล</button>
+      <button class="action-item" (click)="deleteBudgetSource(s)">ลบข้อมูล</button>
+    </clr-dg-action-overflow>
+    <clr-dg-cell>{{s.bgsource_name}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: center;">
+      <div class="toggle-switch">
+        <input type="checkbox" id="toggle_{{s.bgsource_id}}" #active name="isActive" [checked]="s.isactive===1" (change)="setIsActive(s.bgsource_id, $event)">
+        <label for="toggle_{{s.bgsource_id}}"></label>
+      </div>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} รายการ
+    <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
+
+<clr-modal [(clrModalOpen)]="openModal" [clrModalClosable]="false">
+  <h3 class="modal-title">เพิ่ม/แก้ไข แหล่งงบประมาณ</h3>
+  <div class="modal-body">
+    <form>
+      <section class="form-block">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group" style="padding-left: 150px;">
+              <label class="required" for="bgSource">แหล่งงบประมาณ</label>
+              <input class="form-control" type="text" id="bgSource" [(ngModel)]="budgetSourceName" name="bgSource" placeholder="">
+            </div>
+          </div>
+        </div>
+      </section>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="saveBudgetSource()" [disabled]="!budgetSourceName">
+      บันทึก
+    </button>
+    <button type="button" class="btn btn-danger-outline" (click)="openModal = false">
+      ยกเลิก
+    </button>
+  </div>
+</clr-modal>
+
+<pm-loading #pmLoading></pm-loading>

@@ -1,0 +1,32 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
+  <h3 class="modal-title">อัปโหลดไฟล์</h3>
+  <div class="modal-body">
+    <p>เลือกไฟล์ที่ต้องการอัปโหลดโดยเลือกไฟล์ .xls, xlsx เท่านั้น</p>
+    <form>
+      <section class="form-block">
+        <div class="form-group row">
+          <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+            <input class="form-control" disabled type="text" id="txtFile" placeholder="..." [value]="fileName">
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+            <div>
+              <label class="btn btn-sm btn-success btn-link wm-small-btn">
+                <input type="file" #file accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                  style="display: none;" (change)="fileChangeEvent($event)">
+                <clr-icon shape="search"></clr-icon>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-primary" [disabled]="!fileName" (click)="doUploadFile()">
+      อัปโหลดไฟล์
+    </button>
+    <button type="button" class="btn btn-sm btn-danger" (click)="opened = false">
+      ปิด/ยกเลิก
+    </button>
+  </div>
+</clr-modal>

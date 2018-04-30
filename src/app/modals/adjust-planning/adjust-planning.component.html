@@ -1,0 +1,53 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false" [clrModalSize]="'md'">
+  <h3 class="modal-title">ปรับแผนการจัดซื้อยาและเวชภัณฑ์</h3>
+  <div class="modal-body">
+    <form class="compact">
+      <section class="form-block">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group" style="padding: 0px;">
+              <div class="radio">
+                <input type="radio" name="adjust" id="adjustAmount" [(ngModel)]="adjustType" (ngModelChange)="onChangeAdjustType($event)"
+                  value="amount">
+                <label for="adjustAmount">ปรับแผนจากมูลค่ารวม</label>
+              </div>
+              <input type="text" class="form-control" name="adjustAmount" [(ngModel)]="adjustAmount" [disabled]="disabledAmount" wmNumberOnly>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group" style="padding: 0px;">
+              <div class="radio">
+                <input type="radio" name="adjust" id="adjustPercent" [(ngModel)]="adjustType" (ngModelChange)="onChangeAdjustType($event)"
+                  value="percent">
+                <label for="adjustPercent">ปรับแผนโดยคิดเป็น %</label>
+              </div>
+              <input type="text" class="form-control" name="adjustPercent" [(ngModel)]="adjustPercent"
+                [disabled]="disabledPercent">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group row">
+              <div class="col-md-2">
+                <label class="required" for="memo">หมายเหตุ</label>
+              </div>
+              <div class="col-md-10">
+                <input type="text" name="memo" [(ngModel)]="adjustMemo" size="100">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="processAdjustPlanning()" [disabled]="(!adjustAmount && !adjustPercent) || !adjustMemo">
+      ตกลง
+    </button>
+    <button type="button" class="btn btn-danger-outline" (click)="opened = false">
+      ยกเลิก
+    </button>
+  </div>
+</clr-modal>

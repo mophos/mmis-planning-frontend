@@ -1,0 +1,82 @@
+<nav class="breadcrumb">
+  <a class="breadcrumb-item" href="javascript://" routerLink="/admin">หน้าหลัก</a>
+  <span class="breadcrumb-item active">แผนจัดซื้อยาและเวชภัณฑ์</span>
+</nav>
+
+<div class="row" style="padding: 5px 2px 2px 2px;">
+  <div class="col-md-1">
+    <button class="btn btn-sm btn-success" routerLink="/apps/planning-new">
+      + สร้างแผนฯ
+    </button>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group row" style="padding-top: 5px;">
+      <div class="col-md-4">
+        <label class="required" for="planningYear">ปีงบประมาณ</label>
+      </div>
+      <div class="col-md-8">
+        <div class="select" style="width: 150px;">
+          <select [(ngModel)]="planningYear" name="planningYear">
+            <option value="">แสดงทั้งหมด</option>
+            <option *ngFor="let y of years" [value]="y.planning_year">{{y.planning_year | toThaiDate: 'Y'}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group row" style="padding-top: 5px;">
+      <div class="col-md-3">
+        <label class="required" for="planningStatus">สถานะ</label>
+      </div>
+      <div class="col-md-9">
+        <div class="select" style="width: 150px;">
+          <select [(ngModel)]="planningStatus" name="planningStatus">
+            <option value="">แสดงทั้งหมด</option>
+            <option value="Y">ยืนยันแล้ว</option>
+            <option value="N">รอการยืนยัน</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group row" style="padding-top: 5px;">
+      <div class="col-md-10">
+        <input type="text" name="planningName" [(ngModel)]="planningName" size="30" placeholder="ชื่อแผน...">
+      </div>
+    </div>
+  </div>
+  <div class="col-md-1">
+    <button class="btn btn-primary btn-sm" (click)="getPlanning()">
+      <clr-icon shape="search"></clr-icon> ค้นหา
+    </button>
+  </div>
+</div>
+
+<clr-datagrid [style.height.%]="80">
+  <clr-dg-column>ปีงบประมาณ</clr-dg-column>
+  <clr-dg-column>ชื่อแผน</clr-dg-column>
+  <clr-dg-column>สถานะ</clr-dg-column>
+  <clr-dg-column>มูลค่ารวม</clr-dg-column>
+  <clr-dg-column></clr-dg-column>
+  <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+  <clr-dg-row *clrDgItems="let p of plannings" [clrDgItem]="p">
+    <clr-dg-cell>{{p.planning_year | toThaiDate: 'Y'}}</clr-dg-cell>
+    <clr-dg-cell>{{p.planning_name}}</clr-dg-cell>
+    <clr-dg-cell>{{p.confirmed | status}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: right;">{{p.planning_amount | number : '1.2-2'}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: center;">
+      <button class="btn btn-success btn-sm wm-small-btn" (click)="onEditPlanning(p)">
+        <clr-icon shape="note" size="16"></clr-icon>
+      </button>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} รายการ
+    <clr-dg-pagination #pagination [clrDgPageSize]="10"></clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
+
+<pm-loading #pmLoading></pm-loading>
