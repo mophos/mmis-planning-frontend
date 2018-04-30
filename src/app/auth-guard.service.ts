@@ -25,7 +25,7 @@ export class AuthGuard {
         } else {
           const rights = accessRight.split(',');
           let isAdmin = false;
-          if (_.indexOf(rights, 'CM_ADMIN') > -1) {
+          if (_.indexOf(rights, 'BM_ADMIN') > -1) {
             isAdmin = true;
           } else {
             isAdmin = false;
