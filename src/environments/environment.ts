@@ -5,7 +5,7 @@ export const environment = {
   docUrl: 'http://203.157.156.69/api/document',
   loginUrl: 'http://203.157.156.69/api/um/',
   portalUrl: 'http://203.157.156.69/api/portal',
-  cmPrefix: 'CM',
+  pmPrefix: 'PM',
 
   homeUrl: '/',
   purchasingUrl: '/purchase',

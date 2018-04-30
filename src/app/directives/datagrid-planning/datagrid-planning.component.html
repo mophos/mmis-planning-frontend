@@ -1,4 +1,4 @@
-<clr-datagrid (clrDgRefresh)="refreshPlanning($event)" [(clrDgSelected)]="itemSelected" style="padding-top: 5px;">
+<clr-datagrid (clrDgRefresh)="refreshPlanning($event)" style="padding-top: 5px;">
   <clr-dg-column [style.width.px]="170">ชื่อสินค้า</clr-dg-column>
   <clr-dg-column [style.width.px]="150">หน่วย</clr-dg-column>
   <clr-dg-column [style.width.px]="100">ราคาต่อหน่วย</clr-dg-column>
@@ -49,19 +49,19 @@
       {{ selectedEstimateBuyQty | number: '1.0-0' }}
     </clr-dg-cell>
     <clr-dg-cell>
-      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId || disableQ1"
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
         [(ngModel)]="selectedQ1" wmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell>
-      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId || disableQ2"
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
         [(ngModel)]="selectedQ2" wmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell>
-      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId || disableQ3"
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
         [(ngModel)]="selectedQ3" wmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell>
-      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId || disableQ4"
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
         [(ngModel)]="selectedQ4" wmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell style="text-align: right;">

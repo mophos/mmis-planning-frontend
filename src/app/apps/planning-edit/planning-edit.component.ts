@@ -263,7 +263,7 @@ export class PlanningEditComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  onClickPrintReport(headerId: any) {
+  onClickPrintReport() {
     const url = `${this.url}/planning/report/${this.planningHeaderId}?uuid=${this._uuid}&token=${this._token}`;
     this.htmlPreview.showReport(url);
   }

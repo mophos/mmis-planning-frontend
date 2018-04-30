@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { LoadingComponent } from '../../modals/loading/loading.component';
 import { BudgetService } from '../../services/budget.service';
 import { AlertService } from '../../services/alert.service';
+import { IMyOptions } from 'mydatepicker-th';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -41,6 +42,13 @@ export class BudgetComponent implements OnInit {
   budgetStatus: any;
   selectedBudgetDetailId: any = '';
   token: any;
+
+  myDatePickerOptions: IMyOptions = {
+    inline: false,
+    dateFormat: 'dd mmm yyyy',
+    editableDateField: false,
+    showClearDateBtn: false
+  };
 
   constructor(
     @Inject('API_URL') private url: string,

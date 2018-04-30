@@ -34,7 +34,7 @@ import { HttpModule } from '@angular/http';
     { provide: 'LOGIN_URL', useValue: environment.loginUrl },
     { provide: 'DOC_URL', useValue: environment.docUrl },
     { provide: 'HOME_URL', useValue: environment.homeUrl },
-    { provide: 'CM_PRIFIX', useValue: environment.cmPrefix },
+    { provide: 'PM_PRIFIX', useValue: environment.pmPrefix },
 
   ],
   bootstrap: [AppComponent]
