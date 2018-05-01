@@ -9,6 +9,7 @@ import { BudgetSubTypeComponent } from './budget-sub-type/budget-sub-type.compon
 import { PlanningNewComponent } from './planning-new/planning-new.component';
 import { PlanningComponent } from './planning/planning.component';
 import { PlanningEditComponent } from './planning-edit/planning-edit.component';
+import { BidTypeComponent } from './bid-type/bid-type.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
       { path: 'planning', component: PlanningComponent},
       { path: 'planning-new', component: PlanningNewComponent },
       { path: 'planning-edit/:headerId', component: PlanningEditComponent },
+      { path: 'bid-type', component: BidTypeComponent },
     ]
   }
 ];
