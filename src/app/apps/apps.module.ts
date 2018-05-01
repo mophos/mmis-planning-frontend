@@ -22,6 +22,8 @@ import { PlanningService } from '../services/planning.service';
 import { PlanningComponent } from './planning/planning.component';
 import { PlanningEditComponent } from './planning-edit/planning-edit.component';
 import { UploadingService } from '../services/uploading.service';
+import { BidTypeComponent } from './bid-type/bid-type.component';
+import { BidTypeService } from '../services/bid-type.service';
 
 @NgModule({
   imports: [
@@ -43,13 +45,15 @@ import { UploadingService } from '../services/uploading.service';
     BudgetSubTypeComponent,
     PlanningNewComponent,
     PlanningComponent,
-    PlanningEditComponent
+    PlanningEditComponent,
+    BidTypeComponent
   ],
   providers: [
     AlertService,
     BudgetService,
     PlanningService,
     UploadingService,
+    BidTypeService,
     AuthGuard
   ]
 })

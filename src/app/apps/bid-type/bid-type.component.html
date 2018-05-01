@@ -1,0 +1,63 @@
+<nav class="breadcrumb">
+  <a class="breadcrumb-item" href="javascript://" routerLink="/admin">หน้าหลัก</a>
+  <span class="breadcrumb-item active">รูปแบบการจัดซื้อ</span>
+</nav>
+
+<button class="btn btn-success btn-sm float-right" (click)="onClickAdd()">
+  + เพิ่มรายการ</button>
+<clr-datagrid style="height: 85%;">
+  <clr-dg-column [clrDgField]="'name_name'">รูปแบบการจัดซื้อ</clr-dg-column>
+  <clr-dg-column [style.width.px]="150">สถานะการใช้งาน</clr-dg-column>
+  <clr-dg-column [style.width.px]="150">ค่าเริ่มต้น</clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let row of rows">
+    <clr-dg-action-overflow>
+      <button class="action-item" (click)="onClickEdit(row)">แก้ไข</button>
+      <button class="action-item" (click)="onClickDelete(row)">ลบ</button>
+    </clr-dg-action-overflow>
+    <clr-dg-cell>{{row.bid_name}}</clr-dg-cell>
+    <clr-dg-cell style="text-align: center;">
+      <div class="toggle-switch">
+        <input type="checkbox" id="toggle_{{row.bid_id}}" #active name="isActive" [checked]="row.isactive===1" (change)="setIsActive(row.bid_id, $event)">
+        <label for="toggle_{{row.bid_id}}"></label>
+      </div>
+    </clr-dg-cell>
+    <clr-dg-cell style="text-align: center;">
+      <input type="radio" name="default" [checked]="row.isdefault==='Y'" (change)="setDefault(row.bid_id, $event)">
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} รายการ
+    <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
+
+<!-- เพิ่ม/แก้ไข -->
+<clr-modal [(clrModalOpen)]="modalInput" [clrModalClosable]="false" [clrModalSize]="'md'">
+  <h3 class="modal-title">เพิ่ม/แก้ไข รูปแบบการจัดซื้อ</h3>
+  <div class="modal-body">
+    <form>
+      <section class="form-block">
+        <div class="form-group row">
+          <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            <label class="required" for="bidName">รูปแบบการจัดซื้อ</label>
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <input type="text" name="bidName" [(ngModel)]="bidName" placeholder="" size="50">
+          </div>
+        </div>
+      </section>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-md btn-primary" [disabled]="!bidName" (click)="onClickSave()">
+      บันทึก
+    </button>
+    <button type="button" class="btn btn-md btn-danger-outline" (click)="modalInput=false">
+      ปิด
+    </button>
+  </div>
+</clr-modal>
+
+<pm-loading #pmLoading></pm-loading>
