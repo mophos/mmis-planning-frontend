@@ -44,6 +44,7 @@ export class PlanningNewComponent implements OnInit {
   planningName: any;
   planningMemo: any;
   planningYear: any = moment().get('year') + (moment().get('month') > 8 ? 1 : 0) + 1;
+  refHeaderId: any;
   query: any;
 
   perPage = 10;
@@ -101,7 +102,8 @@ export class PlanningNewComponent implements OnInit {
         totalAmount: this.totalAmount,
         planningName: this.planningName,
         planningMemo: this.planningMemo,
-        planningQty: this.planningTotal
+        planningQty: this.planningTotal,
+        refHeaderId: this.refHeaderId
       };
       const rs: any = await this.planningService.insertPlanning(_header, this._uuid);
       if (rs.ok) {
@@ -308,6 +310,7 @@ export class PlanningNewComponent implements OnInit {
       this.pmLoading.show();
       const rs: any = await this.planningService.processMergePercent(obj.headerIds, this._uuid);
       if (rs.ok) {
+        this.refHeaderId = obj.headerIds;
         this.alertService.success();
         this.mergeModal.hide();
         this.getPlanningTmp();

@@ -41,6 +41,7 @@ export class PlanningEditComponent implements OnInit {
   planningName: any;
   planningMemo: any;
   planningYear: any;
+  refHeaderId: any;
   query: any;
 
   perPage = 5;
@@ -79,6 +80,7 @@ export class PlanningEditComponent implements OnInit {
         this.planningStatus = data.confirmed;
         this.totalAmount = data.planning_amount;
         this.planningTotal = data.planning_qty;
+        this.refHeaderId = data.ref_hdr_id;
       } else {
         this.alertService.error(rs.error);
       }
@@ -131,7 +133,8 @@ export class PlanningEditComponent implements OnInit {
         planningName: this.planningName,
         planningMemo: this.planningMemo,
         confirmed: this.planningStatus,
-        planningQty: this.planningTotal
+        planningQty: this.planningTotal,
+        refHeaderId: this.refHeaderId
       };
       const rs: any = await this.planningService.updatePlanning(_header, this._uuid);
       if (rs.ok) {
