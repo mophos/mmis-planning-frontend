@@ -1,0 +1,6 @@
+<input type="text" [disabled]="_disabled" [value]="query" [taParams]="'PARACETAMOL TAB. 500 MG.'" (keyup)="clearSelected($event)" style="width: 100%;" placeholder="ค้นหาสินค้า..." agxTypeahead
+  [taUrl]="searchGenericUrl" taApi="http" [taItemTpl]="itemTpl" (taSelected)="handleResultSelected($event)">
+
+<ng-template #itemTpl let-result style="width: 100%">
+   {{ result.result.generic_name }}
+</ng-template>

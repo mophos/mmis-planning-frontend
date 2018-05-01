@@ -1,0 +1,116 @@
+<nav class="breadcrumb">
+  <a class="breadcrumb-item" href="javascript://" routerLink="/apps">หน้าหลัก</a>
+  <a class="breadcrumb-item" href="javascript://" routerLink="/apps/planning">แผนจัดซื้อยาและเวชภัณฑ์</a>
+  <span class="breadcrumb-item active">สร้างแผนจัดซื้อยาและเวชภัณฑ์</span>
+</nav>
+
+<div class="card">
+  <div class="card-block" style="padding: 0px 18px;">
+    <form class="compact" style="padding-top: 0px;">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="col-md-4">
+              <label class="required" for="planningYear">ปีงบประมาณ</label>
+            </div>
+            <div class="col-md-8">
+              <div class="select">
+                <select id="planningYear" [(ngModel)]="planningYear" name="planningYear" (change)="onChangePlanningYear()">
+                  <option value="">
+                    กรุณาเลือกปีงบประมาณ
+                  </option>
+                  <option *ngFor="let y of years" [value]="y">{{y | toThaiDate: 'Y'}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group row">
+            <div class="col-md-2">
+              <label class="required" for="planningName">ชื่อแผน</label>
+            </div>
+            <div class="col-md-10">
+              <input type="text" id="planningName" name="planningName" [(ngModel)]="planningName" size="50">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="col-md-4">
+              <label for="status">สถานะแผน</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="text-success" id="status" readonly value="{{ planningStatus | status}}">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="col-md-4">
+              <label for="countItem">จำนวนรายการ</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="text-success" id="countItem" readonly value="{{ planningTotal | number }}">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="col-md-4">
+              <label for="totalAmount">มูลค่ารวม</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="text-success" id="totalAmount" readonly value="{{totalAmount | number: '1.2-2'}}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6" style="padding-top: 5px;">
+    <label for="query">ค้นหา</label>
+    <input type="text" placeholder="พิมพ์แล้วกด Enter" [(ngModel)]="query" (keyup)="enterSearch($event)" style="width: 300px;">
+  </div>
+  <div class="col-md-6">
+    <div class="text-right" style="padding-top: 5px;">
+      <div class="btn-group btn-outline-primary btn-sm">
+        <button class="btn" (click)="onClickCopyPlanning()">คัดลอกแผน</button>
+        <button class="btn" (click)="onClickUploadPlanning()">นำเข้าข้อมูล</button>
+        <button class="btn" (click)="onClickMergePlanning()">รวมแผน</button>
+        <button class="btn" (click)="onClickAdjustPlanning()" [disabled]="!totalAmount">ปรับแผน</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<pm-adjust-planning #adjustModal (adjust)="processAdjustPlanning($event)"></pm-adjust-planning>
+<pm-copy-planning #copyModal (copy)="processCopyPlanning($event)"></pm-copy-planning>
+<pm-upload-excel #uploadModal (upload)="processUploadPlanning($event)"></pm-upload-excel>
+<pm-merge-planning #mergeModal (merge)="processMergePlanning($event)"></pm-merge-planning>
+
+<pm-datagrid-planning #dataGrid
+[year]="planningYear"
+[data]="plannings"
+[perPage]="perPage"
+[total]="planningTotal"
+(insert)="insertPlanningTmp($event)"
+(update)="updatePlanningTmp($event)"
+(delete)="deletePlanningTmp($event)"
+(refresh)="refreshPlanning($event)"></pm-datagrid-planning>
+
+<div>
+  <button type="button" (click)="savePlanning()" class="btn btn-sm btn-success" [disabled]="!planningYear || !planningName || !plannings.length">
+    <clr-icon shape="floppy"></clr-icon> บันทึกแผนฯ
+  </button>
+  <button type="button" class="btn btn-sm btn-danger" [routerLink]="['/apps/planning']">
+    <clr-icon shape="home"></clr-icon> กลับหน้าหลัก
+  </button>
+</div>
+
+<pm-loading #pmLoading></pm-loading>

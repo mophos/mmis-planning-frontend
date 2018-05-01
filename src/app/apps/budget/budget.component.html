@@ -1,0 +1,269 @@
+<nav class="breadcrumb">
+  <a class="breadcrumb-item" href="javascript://" routerLink="/apps">หน้าหลัก</a>
+  <span class="breadcrumb-item active">บริหารงบประมาณ</span>
+</nav>
+
+<div class="row wid99" style="padding-top: 5px; padding-bottom: 5px;">
+  <div class="col-md-1">
+    <label for="year">ปีงบประมาณ</label>
+  </div>
+  <div class="col-md-3">
+    <div class="select form-control">
+      <select id="year" [(ngModel)]="selectedYear" name="year" (change)="searchBudgetDetail()">
+        <option value="">
+          กรุณาเลือกปีงบประมาณ
+        </option>
+        <option *ngFor="let y of budgetYears" [value]="y.bg_year">{{y.bg_year | toThaiDate: 'Y'}}</option>
+      </select>
+    </div>
+  </div>
+</div>
+<clr-tabs>
+  <clr-tab>
+    <button clrTabLink id="detail" (click)="getBudgetDetail()">รายละเอียดงบประมาณ</button>
+    <clr-tab-content id="detail" *clrIfActive="true">
+      <div class="row">
+        <div class="col-md-6">
+          <button class="btn btn-success btn-sm btn-icon" style="margin-top: 5px;" (click)="addBudget()">
+            <clr-icon shape="plus"></clr-icon> เพิ่มงบประมาณ
+          </button>
+        </div>
+        <div class="col-md-6" style="text-align: right;">
+          <button class="btn btn-primary btn-sm btn-icon" style="margin-top: 10px;" [disabled]="!selectedApprove.length" (click)="approveBudgetDetail()">
+            อนุมัติงบประมาณ
+          </button>
+        </div>
+      </div>
+      <clr-datagrid style="height: 75%;" [(clrDgSelected)]="selectedApprove" [clrDgLoading]="loading">
+        <clr-dg-column [style.width.px]="100">ปีงบประมาณ</clr-dg-column>
+        <clr-dg-column [clrDgField]="'bgtype_name'">หมวดงบประมาณ</clr-dg-column>
+        <clr-dg-column [clrDgField]="'bgtypesub_name'">หมวดงบประมาณย่อย</clr-dg-column>
+        <clr-dg-column [style.width.px]="150" [clrDgField]="'od_date'">วันที่ได้รับงบประมาณ</clr-dg-column>
+        <clr-dg-column [clrDgField]="'bgsource_name'">แหล่งงบประมาณ</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">จำนวนเงิน</clr-dg-column>
+        <clr-dg-column [style.width.px]="120" [clrDgField]="'update_date'">แก้ไขล่าสุด</clr-dg-column>
+        <clr-dg-column [style.width.px]="80">#</clr-dg-column>
+        <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+        <clr-dg-row *clrDgItems="let b of budgetDetails" [clrDgItem]="b" [ngClass]="{'budget-approved': b.status==='APPROVE'}">
+          <clr-dg-cell style="text-align: center;">{{b.bg_year | toThaiDate: 'Y'}}</clr-dg-cell>
+          <clr-dg-cell>{{b.bgtype_name}}</clr-dg-cell>
+          <clr-dg-cell>{{b.bgtypesub_name}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: center;">{{b.od_date | toThaiDate}}</clr-dg-cell>
+          <clr-dg-cell>{{b.bgsource_name}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: center;">{{b.update_date | toThaiDate}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: center;">
+            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editBudgetDetail(b)">
+              <clr-icon shape="note"></clr-icon>
+            </button>
+          </clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} รายการ
+          <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </clr-tab-content>
+  </clr-tab>
+  <clr-tab>
+    <button clrTabLink id="total" (click)="getTotalBudget()">หมวดงบประมาณรวม</button>
+    <clr-tab-content id="total" *clrIfActive>
+      <clr-datagrid style="height: 80%;" [clrDgLoading]="loading">
+        <clr-dg-column [style.width.px]="100">ปีงบประมาณ</clr-dg-column>
+        <clr-dg-column [clrDgField]="'bgtype_name'">หมวดงบประมาณ</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">จำนวนเงินที่จัดสรร</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">จำนวนเงินที่ใช้ไป</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">จำนวนเงินคงเหลือ</clr-dg-column>
+        <clr-dg-column [style.width.px]="100">คงเหลือ (%)</clr-dg-column>
+        <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+        <clr-dg-row *clrDgItems="let b of totalBudgets" [clrDgItem]="b">
+          <clr-dg-cell style="text-align: center;">{{b.bg_year | toThaiDate: 'Y'}}</clr-dg-cell>
+          <clr-dg-cell>{{b.bgtype_name}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.order_amt | number : '1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.amount - b.order_amt | number : '1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{(100 / b.amount * (b.amount - b.order_amt)) / 100 | percent:'1.2-2'}}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} รายการ
+          <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </clr-tab-content>
+  </clr-tab>
+  <clr-tab>
+    <button clrTabLink id="total" (click)="getTotalSubBudget()">หมวดงบประมาณย่อยรวม</button>
+    <clr-tab-content id="total" *clrIfActive>
+      <button class="btn btn-sm" (click)="printReportBudget()">
+        <clr-icon shape="printer"></clr-icon> พิมพ์รายงานงบประมาณย่อยรวม</button>
+      <clr-datagrid style="height: 80%;" [clrDgLoading]="loading">
+        <clr-dg-column [style.width.px]="100">ปีงบประมาณ</clr-dg-column>
+        <clr-dg-column [clrDgField]="'bgtype_name'">หมวดงบประมาณ</clr-dg-column>
+        <clr-dg-column [clrDgField]="'bgtypesub_name'">หมวดงบประมาณย่อย</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">จำนวนเงินที่จัดสรร</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">จำนวนเงินที่ใช้ไป</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">จำนวนเงินคงเหลือ</clr-dg-column>
+        <clr-dg-column [style.width.px]="100">คงเหลือ (%)</clr-dg-column>
+        <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+        <clr-dg-row *clrDgItems="let b of totalSubBudgets" [clrDgItem]="b">
+          <clr-dg-cell style="text-align: center;">{{b.bg_year | toThaiDate: 'Y'}}</clr-dg-cell>
+          <clr-dg-cell>{{b.bgtype_name}}</clr-dg-cell>
+          <clr-dg-cell>{{b.bgtypesub_name}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.order_amt | number : '1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.amount - b.order_amt | number : '1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{(100 / b.amount * (b.amount - b.order_amt)) / 100 | percent:'1.2-2'}}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} รายการ
+          <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </clr-tab-content>
+  </clr-tab>
+  <clr-tab>
+    <button clrTabLink id="total" (click)="getBudgetTransaction()">ประวัติการตัดงบประมาณ</button>
+    <clr-tab-content id="total" *clrIfActive>
+      <div class="row wid99" style="padding-top: 5px; padding-bottom: 5px;">
+        <div class="col-md-2 push-md-10" style="text-align: right;">
+          <div class="select">
+            <select [(ngModel)]="selectedBudgetDetailId" name="bgDetailId" (change)="getBudgetTransaction()">
+              <option value="">งบประมาณทั้งหมด</option>
+              <option [value]="b.bgdetail_id" *ngFor="let b of budgetList">{{b.budget_desc}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <clr-datagrid style="height: 75%;" [(clrDgLoading)]="loading">
+        <clr-dg-column [style.width.px]="100" [clrDgField]="'date_time'">วันที่</clr-dg-column>
+        <clr-dg-column>งบประมาณ</clr-dg-column>
+        <clr-dg-column [style.width.px]="150" [clrDgField]="'purchase_order_number'">เลขที่ใบสั่งซื้อ</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">ยอดคงเหลือยกมา</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">ยอดจัดซื้อ</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">ยอดจัดซื้อ(ยกเลิก)</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">ยอดคงเหลือ</clr-dg-column>
+        <clr-dg-column [style.width.px]="100" [clrDgField]="'type'">หมายเหตุ</clr-dg-column>
+        <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+        <clr-dg-row *clrDgItems="let b of budgetTransactions; let idx=index;" [clrDgItem]="p" [ngClass]="{
+          'budget-spend': b.transaction_status==='SPEND'
+          , 'budget-revoke': b.transaction_status==='REVOKE'
+        }">
+          <clr-dg-cell style="text-align: center;">{{b.date_time | toThaiDate}}</clr-dg-cell>
+          <clr-dg-cell>{{b.budget_desc}}</clr-dg-cell>
+          <clr-dg-cell>{{b.purchase_order_number}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.incoming_balance | number:'1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">-{{b.spend_amount | number:'1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">
+            <span *ngIf="b.transaction_status==='REVOKE'">+{{b.revoke_amount | number:'1.2-2'}}</span>
+            <span *ngIf="b.transaction_status!=='REVOKE'">-</span>
+          </clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{b.balance | number:'1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell>{{b.type_desc}}</clr-dg-cell>
+        </clr-dg-row>
+        <clr-dg-footer>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} รายการ
+          <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </clr-tab-content>
+  </clr-tab>
+</clr-tabs>
+
+<clr-modal [(clrModalOpen)]="openBudgetModal" [clrModalClosable]="false" [clrModalSize]="'md'">
+  <h3 class="modal-title">เพิ่ม/แก้ไข งบประมาณ</h3>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="bgYear">ปีงบประมาณ</label>
+            <div class="select form-control">
+              <select id="bgYear" [(ngModel)]="budgetYear" name="bgYear" [disabled]="disableBudgetYear">
+                <option value="">
+                  <กรุณาเลือกปีงบประมาณ>
+                </option>
+                <option *ngFor="let y of years" [value]="y">{{y | toThaiDate: 'Y'}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="typeName">หมวดงบประมาณ</label>
+            <div class="select form-control">
+              <select id="typeName" [(ngModel)]="budgetTypeId" name="typeName">
+                <option value="">
+                  <กรุณาเลือกหมวดงบประมาณ>
+                </option>
+                <option *ngFor="let t of budgetTypes" [value]="t.bgtype_id">{{t.bgtype_name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="subType">หมวดงบประมาณย่อย</label>
+            <div class="select form-control">
+              <select id="subType" [(ngModel)]="budgetSubTypeId" name="subType">
+                <option value="">
+                  <กรุณาเลือกหมวดงบประมาณย่อย>
+                </option>
+                <option *ngFor="let s of budgetSubTypes" [value]="s.bgtypesub_id">{{s.bgtypesub_name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="odDate">วันที่ได้รับงบประมาณ</label>
+            <my-date-picker-th id="odDate" name="odDate" [options]="myDatePickerOptions" [(ngModel)]="operationDate" required></my-date-picker-th>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="typeName">แหล่งงบประมาณ</label>
+            <div class="select form-control">
+              <select id="bgSource" [(ngModel)]="budgetSourceId" name="bgSource">
+                <option value="">
+                  <กรุณาเลือกแหล่งงบประมาณ>
+                </option>
+                <option *ngFor="let s of budgetSources" [value]="s.bgsource_id">{{s.bgsource_name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="bgAmount">จำนวนเงิน (บาท)</label>
+            <input class="form-control" type="text" id="bgAmount" [(ngModel)]="budgetAmount" name="bgAmount" placeholder="จำนวนเงิน"
+              wmNumberOnly>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="saveBudgetDetail()" [disabled]="!budgetYear || !budgetTypeId || !operationDate || !budgetSourceId || !budgetAmount || budgetStatus==='APPROVE'">
+      บันทึก
+    </button>
+    <button class="btn btn-danger-outline" (click)="openBudgetModal = false">
+      ปิด
+    </button>
+  </div>
+</clr-modal>
+
+<pm-html-preview #htmlPreview></pm-html-preview>
+<pm-loading #pmLoading></pm-loading>
