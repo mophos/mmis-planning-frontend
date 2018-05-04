@@ -28,7 +28,7 @@
     </clr-dg-cell>
     <clr-dg-cell>
       <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId" [(ngModel)]="selectedCost"
-        wmNumberOnly placeholder="0">
+      pmNumberOnly placeholder="0">
     </clr-dg-cell>
     <clr-dg-cell style="text-align: right;">
       {{ selectedRate3Year | number: '1.0-0' }}
@@ -50,19 +50,19 @@
     </clr-dg-cell>
     <clr-dg-cell>
       <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
-        [(ngModel)]="selectedQ1" wmNumberOnly placeholder="0" (input)="onInputQty()">
+        [(ngModel)]="selectedQ1" pmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell>
       <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
-        [(ngModel)]="selectedQ2" wmNumberOnly placeholder="0" (input)="onInputQty()">
+        [(ngModel)]="selectedQ2" pmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell>
       <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
-        [(ngModel)]="selectedQ3" wmNumberOnly placeholder="0" (input)="onInputQty()">
+        [(ngModel)]="selectedQ3" pmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell>
       <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
-        [(ngModel)]="selectedQ4" wmNumberOnly placeholder="0" (input)="onInputQty()">
+        [(ngModel)]="selectedQ4" pmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell style="text-align: right;">
       {{ selectedQty | number: '1.0-0' }}

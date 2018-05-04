@@ -133,4 +133,11 @@ export class BudgetService {
     return rs.json();
   }
 
+  async insertBudgetTransaction(data: any) {
+    const rs: any = await this.authHttp.post(`${this.url}/budget/sub-total`, {
+      data: data
+    }).toPromise();
+    return rs.json();
+  }
+
 }

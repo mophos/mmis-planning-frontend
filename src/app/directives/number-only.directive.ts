@@ -1,7 +1,7 @@
 import { Directive, HostListener, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[cmNumberOnly]'
+  selector: '[pmNumberOnly]'
 })
 export class NumberOnlyDirective {
 
