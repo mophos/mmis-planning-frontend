@@ -30,6 +30,7 @@ export class BudgetComponent implements OnInit {
 
   disableBudgetYear = false;
   openBudgetModal = false;
+  openSubBudgetModal = false;
 
   selectedYear: any = moment().get('year') + (moment().get('month') > 8 ? 1 : 0);
   bugdetDetailId: any;
@@ -40,8 +41,14 @@ export class BudgetComponent implements OnInit {
   budgetAmount: any;
   budgetSubTypeId: any;
   budgetStatus: any;
+  budgetRemark: any;
   selectedBudgetDetailId: any = '';
   token: any;
+
+  budgetTypeName: any;
+  budgetSubTypeName: any;
+  orderAmount: any;
+  spendAmount: any;
 
   myDatePickerOptions: IMyOptions = {
     inline: false,
@@ -261,6 +268,7 @@ export class BudgetComponent implements OnInit {
             this.operationDate ? `${this.operationDate.date.year}-${this.operationDate.date.month}-${this.operationDate.date.day}` : null;
           detail.budgetSourceId = this.budgetSourceId;
           detail.budgetAmount = this.budgetAmount;
+          detail.budgetRemark = this.budgetRemark;
           try {
             this.pmLoading.show();
             let rs: any;
@@ -296,6 +304,7 @@ export class BudgetComponent implements OnInit {
     this.budgetAmount = b.amount;
     this.budgetSubTypeId = b.bgtypesub_id;
     this.budgetStatus = b.status;
+    this.budgetRemark = b.remark;
     if (b.od_date) {
       this.operationDate = {
         date: {
@@ -353,6 +362,48 @@ export class BudgetComponent implements OnInit {
   async printReportBudget() {
     const url = `${this.url}/budget/report/sub-total?budgetYear=` + this.budgetYears[0].bg_year + `&token=${this.token}`;
     this.htmlPreview.showReport(url);
+  }
+
+  editTotalSubBudget(b) {
+    this.bugdetDetailId = b.bgdetail_id;
+    this.budgetYear = b.bg_year;
+    this.budgetTypeName = b.bgtype_name;
+    this.budgetSubTypeName = b.bgtypesub_name;
+    this.budgetAmount = b.amount;
+    this.orderAmount = b.order_amt;
+    this.spendAmount = 0;
+    this.budgetRemark = null;
+    this.openSubBudgetModal = true;
+  }
+
+  saveTotalSubBudget() {
+    if (this.bugdetDetailId && this.orderAmount && this.budgetRemark) {
+      this.alertService.confirm('ต้องการบันทึกข้อมูล ใช่หรือไม่?')
+        .then(async () => {
+          try {
+            this.pmLoading.show();
+            let data: any = {};
+            data.bugdetDetailId = this.bugdetDetailId;
+            data.incomingBalance = this.budgetAmount - this.orderAmount;
+            data.spendAmount = this.spendAmount * -1;
+            data.remark = this.budgetRemark;
+            const rs: any = await this.budgetService.insertBudgetTransaction(data);
+            if (rs.ok) {
+              this.alertService.success();
+              this.openSubBudgetModal = false;
+              this.getTotalSubBudget();
+            } else {
+              this.alertService.error(rs.error);
+            }
+            this.pmLoading.hide();
+          } catch (error) {
+            this.pmLoading.hide();
+            this.alertService.serverError();
+          }
+        }).catch(() => { });
+    } else {
+      this.alertService.error('กรุณาระบุข้อมูลให้ครบถ้วน');
+    }
   }
 
 }

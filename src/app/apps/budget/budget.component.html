@@ -41,7 +41,7 @@
         <clr-dg-column [style.width.px]="150" [clrDgField]="'od_date'">วันที่ได้รับงบประมาณ</clr-dg-column>
         <clr-dg-column [clrDgField]="'bgsource_name'">แหล่งงบประมาณ</clr-dg-column>
         <clr-dg-column [style.width.px]="150">จำนวนเงิน</clr-dg-column>
-        <clr-dg-column [style.width.px]="120" [clrDgField]="'update_date'">แก้ไขล่าสุด</clr-dg-column>
+        <clr-dg-column>หมายเหตุ</clr-dg-column>
         <clr-dg-column [style.width.px]="80">#</clr-dg-column>
         <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
         <clr-dg-row *clrDgItems="let b of budgetDetails" [clrDgItem]="b" [ngClass]="{'budget-approved': b.status==='APPROVE'}">
@@ -51,7 +51,7 @@
           <clr-dg-cell style="text-align: center;">{{b.od_date | toThaiDate}}</clr-dg-cell>
           <clr-dg-cell>{{b.bgsource_name}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
-          <clr-dg-cell style="text-align: center;">{{b.update_date | toThaiDate}}</clr-dg-cell>
+          <clr-dg-cell>{{b.remark}}</clr-dg-cell>
           <clr-dg-cell style="text-align: center;">
             <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editBudgetDetail(b)">
               <clr-icon shape="note"></clr-icon>
@@ -106,6 +106,7 @@
         <clr-dg-column [style.width.px]="150">จำนวนเงินที่ใช้ไป</clr-dg-column>
         <clr-dg-column [style.width.px]="150">จำนวนเงินคงเหลือ</clr-dg-column>
         <clr-dg-column [style.width.px]="100">คงเหลือ (%)</clr-dg-column>
+        <clr-dg-column [style.width.px]="100">คืนเงินที่ใช้ไป</clr-dg-column>
         <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
         <clr-dg-row *clrDgItems="let b of totalSubBudgets" [clrDgItem]="b">
           <clr-dg-cell style="text-align: center;">{{b.bg_year | toThaiDate: 'Y'}}</clr-dg-cell>
@@ -115,6 +116,11 @@
           <clr-dg-cell style="text-align: right;">{{b.order_amt | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.amount - b.order_amt | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{(100 / b.amount * (b.amount - b.order_amt)) / 100 | percent:'1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: center;">
+            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editTotalSubBudget(b)">
+              <clr-icon shape="note"></clr-icon>
+            </button>
+          </clr-dg-cell>
         </clr-dg-row>
 
         <clr-dg-footer>
@@ -177,7 +183,7 @@
   <div class="modal-body">
     <form>
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label class="required" for="bgYear">ปีงบประมาณ</label>
             <div class="select form-control">
@@ -248,8 +254,15 @@
         <div class="col-md-12">
           <div class="form-group" style="padding-left: 150px;">
             <label class="required" for="bgAmount">จำนวนเงิน (บาท)</label>
-            <input class="form-control" type="text" id="bgAmount" [(ngModel)]="budgetAmount" name="bgAmount" placeholder="จำนวนเงิน"
-              wmNumberOnly>
+            <input class="form-control" type="text" id="bgAmount" [(ngModel)]="budgetAmount" name="bgAmount" pmNumberOnly>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="bgRemark">หมายเหตุ</label>
+            <input class="form-control" type="text" id="bgRemark" [(ngModel)]="budgetRemark" name="bgRemark">
           </div>
         </div>
       </div>
@@ -260,6 +273,81 @@
       บันทึก
     </button>
     <button class="btn btn-danger-outline" (click)="openBudgetModal = false">
+      ปิด
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="openSubBudgetModal" [clrModalClosable]="false" [clrModalSize]="'lg'">
+  <h3 class="modal-title">แก้ไข ยอดเงินที่ใช้ไป</h3>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="bgYear">ปีงบประมาณ</label>
+            <input class="form-control" type="text" name="bgYear" value="{{budgetYear | toThaiDate: 'Y'}}" disabled>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="budget">งบประมาณ</label>
+            <input class="form-control" type="text" name="budget" value="{{budgetTypeName}} - {{budgetSubTypeName}}" disabled>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="bgAmount">จำนวนเงินที่จัดสรร</label>
+            <input class="form-control" type="text" name="bgAmount" value="{{budgetAmount | number : '1.2-2'}}" disabled>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="spendAmt">คืนเงินจำนวน</label>
+            <input class="form-control" type="text" name="spendAmt" [(ngModel)]="spendAmount" pmNumberOnly>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="ordAmount">จำนวนเงินที่ใช้ไป</label>
+            <input class="form-control" type="text" name="ordAmount" value="{{orderAmount - spendAmount | number : '1.2-2'}}" disabled>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="bgTotal">จำนวนเงินคงเหลือ</label>
+            <input class="form-control" type="text" name="bgTotal" value="{{budgetAmount - (orderAmount - spendAmount) | number : '1.2-2'}}" disabled>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="bgTotalPercent">คงเหลือ (%)</label>
+            <input class="form-control" type="text" name="bgTotalPercent" value="{{(100 / budgetAmount * (budgetAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
+              disabled>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="bgRemark">หมายเหตุ</label>
+            <input class="form-control" type="text" id="bgRemark" [(ngModel)]="budgetRemark" name="bgRemark">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="saveTotalSubBudget()" [disabled]="!bugdetDetailId || !spendAmount || spendAmount === '.' || !budgetRemark">
+      บันทึก
+    </button>
+    <button class="btn btn-danger-outline" (click)="openSubBudgetModal = false">
       ปิด
     </button>
   </div>
