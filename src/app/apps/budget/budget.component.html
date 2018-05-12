@@ -41,7 +41,7 @@
         <clr-dg-column [style.width.px]="150" [clrDgField]="'od_date'">วันที่ได้รับงบประมาณ</clr-dg-column>
         <clr-dg-column [clrDgField]="'bgsource_name'">แหล่งงบประมาณ</clr-dg-column>
         <clr-dg-column [style.width.px]="150">จำนวนเงิน</clr-dg-column>
-        <clr-dg-column>หมายเหตุ</clr-dg-column>
+        <clr-dg-column [style.width.px]="200">หมายเหตุ</clr-dg-column>
         <clr-dg-column [style.width.px]="80">#</clr-dg-column>
         <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
         <clr-dg-row *clrDgItems="let b of budgetDetails" [clrDgItem]="b" [ngClass]="{'budget-approved': b.status==='APPROVE'}">
@@ -144,30 +144,33 @@
         </div>
       </div>
       <clr-datagrid style="height: 75%;" [(clrDgLoading)]="loading">
-        <clr-dg-column [style.width.px]="100" [clrDgField]="'date_time'">วันที่</clr-dg-column>
+        <clr-dg-column [style.width.px]="120" [clrDgField]="'date_time'">วันที่</clr-dg-column>
         <clr-dg-column>งบประมาณ</clr-dg-column>
         <clr-dg-column [style.width.px]="150" [clrDgField]="'purchase_order_number'">เลขที่ใบสั่งซื้อ</clr-dg-column>
         <clr-dg-column [style.width.px]="150">ยอดคงเหลือยกมา</clr-dg-column>
-        <clr-dg-column [style.width.px]="150">ยอดจัดซื้อ</clr-dg-column>
-        <clr-dg-column [style.width.px]="150">ยอดจัดซื้อ(ยกเลิก)</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">ตัดงบ</clr-dg-column>
+        <clr-dg-column [style.width.px]="150">คืนงบ</clr-dg-column>
         <clr-dg-column [style.width.px]="150">ยอดคงเหลือ</clr-dg-column>
-        <clr-dg-column [style.width.px]="100" [clrDgField]="'type'">หมายเหตุ</clr-dg-column>
+        <clr-dg-column [clrDgField]="'type'">หมายเหตุ</clr-dg-column>
         <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
-        <clr-dg-row *clrDgItems="let b of budgetTransactions; let idx=index;" [clrDgItem]="p" [ngClass]="{
-          'budget-spend': b.transaction_status==='SPEND'
-          , 'budget-revoke': b.transaction_status==='REVOKE'
+        <clr-dg-row *clrDgItems="let b of budgetTransactions; let idx=index;" [clrDgItem]="b" [ngClass]="{
+          'budget-spend': b.amount < 0
+          , 'budget-revoke': b.amount >= 0
         }">
           <clr-dg-cell style="text-align: center;">{{b.date_time | toThaiDate}}</clr-dg-cell>
           <clr-dg-cell>{{b.budget_desc}}</clr-dg-cell>
           <clr-dg-cell>{{b.purchase_order_number}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.incoming_balance | number:'1.2-2'}}</clr-dg-cell>
-          <clr-dg-cell style="text-align: right;">-{{b.spend_amount | number:'1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">
-            <span *ngIf="b.transaction_status==='REVOKE'">+{{b.revoke_amount | number:'1.2-2'}}</span>
-            <span *ngIf="b.transaction_status!=='REVOKE'">-</span>
+              <span *ngIf="b.amount < 0">{{b.amount | number:'1.2-2'}}</span>
+              <span *ngIf="b.amount >= 0">-</span>
+          </clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">
+            <span *ngIf="b.amount < 0">-</span>
+            <span *ngIf="b.amount >= 0">+{{b.amount | number:'1.2-2'}}</span>
           </clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.balance | number:'1.2-2'}}</clr-dg-cell>
-          <clr-dg-cell>{{b.type_desc}}</clr-dg-cell>
+          <clr-dg-cell>{{b.remark}}</clr-dg-cell>
         </clr-dg-row>
         <clr-dg-footer>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} รายการ

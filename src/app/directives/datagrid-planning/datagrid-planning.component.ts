@@ -104,6 +104,27 @@ export class DatagridPlanningComponent implements OnInit {
     this.selectedAmount = +this.selectedQty * +this.selectedCost;
   }
 
+  onInputSelectedQty() {
+    const result = this.selectedQty % 4;
+    if (result) {
+      const front = Math.floor(this.selectedQty / 4);
+      this.selectedQ1 = this.selectedQ2 = this.selectedQ3 = this.selectedQ4 = front;
+      if (result === 1) {
+        this.selectedQ1 = this.selectedQ1 + 1;
+      } else if (result === 2) {
+        this.selectedQ1 = this.selectedQ1 + 1;
+        this.selectedQ2 = this.selectedQ2 + 1;
+      } else {
+        this.selectedQ1 = this.selectedQ1 + 1;
+        this.selectedQ2 = this.selectedQ2 + 1;
+        this.selectedQ3 = this.selectedQ3 + 1;
+      }
+    } else {
+      this.selectedQ1 = this.selectedQ2 = this.selectedQ3 = this.selectedQ4 = this.selectedQty / 4;
+    }
+    this.selectedAmount = +this.selectedQty * +this.selectedCost;
+  }
+
   addItem() {
     if (this.selectedCost && this.selectedGenericId && this.selectedUnitGenericId && this.selectedBidTypeId) {
       let obj: any = {};
@@ -212,6 +233,16 @@ export class DatagridPlanningComponent implements OnInit {
     } catch (error) {
       this.alertService.error();
     }
+  }
+
+  refreshItem() {
+    if (this.selectedTmpId) {
+      let obj: any = {};
+      obj.tmp_id = this.selectedTmpId;
+      obj.is_edit = 'N';
+      this.updatePlanningTmp(obj);
+    }
+    this.clearForm();
   }
 
   clearForm() {
