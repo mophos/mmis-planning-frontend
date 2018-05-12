@@ -65,7 +65,9 @@
         [(ngModel)]="selectedQ4" pmNumberOnly placeholder="0" (input)="onInputQty()">
     </clr-dg-cell>
     <clr-dg-cell style="text-align: right;">
-      {{ selectedQty | number: '1.0-0' }}
+      <!-- {{ selectedQty | number: '1.0-0' }} -->
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
+        [(ngModel)]="selectedQty" pmNumberOnly placeholder="0" (input)="onInputSelectedQty()">
     </clr-dg-cell>
     <clr-dg-cell style="text-align: right;">
       {{ selectedAmount | number: '1.2-2' }}
@@ -85,7 +87,7 @@
           (click)="addItem()">
           <clr-icon shape="floppy" size="16"></clr-icon>
         </button>
-        <button class="btn btn-danger btn-sm wm-small-btn" (click)="clearForm()">
+        <button class="btn btn-danger btn-sm wm-small-btn" (click)="refreshItem()">
           <clr-icon shape="refresh" size="16"></clr-icon>
         </button>
       </div>
