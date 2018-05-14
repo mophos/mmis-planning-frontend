@@ -131,4 +131,11 @@ export class PlanningService {
     return rs.json();
   }
 
+  async clearPlanningTmp(_uuid: any) {
+    const rs: any = await this.authHttp.post(`${this.url}/planning/clear-tmp`, {
+      uuid: _uuid
+    }).toPromise();
+    return rs.json();
+  }
+
 }

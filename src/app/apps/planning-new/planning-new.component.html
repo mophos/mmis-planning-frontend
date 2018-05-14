@@ -15,7 +15,7 @@
             </div>
             <div class="col-md-8">
               <div class="select">
-                <select id="planningYear" [(ngModel)]="planningYear" name="planningYear" (change)="onChangePlanningYear()">
+                <select id="planningYear" [(ngModel)]="planningYear" name="planningYear" (focus)="onFocusPlanningYear($event)" (change)="onChangePlanningYear($event)">
                   <option value="">
                     กรุณาเลือกปีงบประมาณ
                   </option>
@@ -80,6 +80,7 @@
   <div class="col-md-6">
     <div class="text-right" style="padding-top: 5px;">
       <div class="btn-group btn-outline-primary btn-sm">
+        <button class="btn" (click)="processForecast()">คำนวณแผน</button>
         <button class="btn" (click)="onClickCopyPlanning()">คัดลอกแผน</button>
         <button class="btn" (click)="onClickUploadPlanning()">นำเข้าข้อมูล</button>
         <button class="btn" (click)="onClickMergePlanning()">รวมแผน</button>
