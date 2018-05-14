@@ -44,8 +44,10 @@ export class PlanningNewComponent implements OnInit {
   planningName: any;
   planningMemo: any;
   planningYear: any = moment().get('year') + (moment().get('month') > 8 ? 1 : 0) + 1;
+  oldPlanningYear: any;
   refHeaderId: any;
   query: any;
+  genericType: any;
 
   perPage = 10;
   offset = 0;
@@ -64,7 +66,7 @@ export class PlanningNewComponent implements OnInit {
   ngOnInit() {
     const _min = new Date().getFullYear();
     this.years = Array.from(new Array(5), (x, i) => _min + i);
-    this.processForecast();
+    this.oldPlanningYear = this.planningYear;
   }
 
   enterSearch(event: any) {
@@ -74,8 +76,38 @@ export class PlanningNewComponent implements OnInit {
     }
   }
 
-  onChangePlanningYear() {
-    this.processForecast();
+  onFocusPlanningYear(event) {
+    if (this.oldPlanningYear === this.planningYear) {
+      this.oldPlanningYear = event.target.value;
+    }
+  }
+
+  onChangePlanningYear(event) {
+    this.alertService.confirm('รายการที่มีอยู่จะถูกลบ คุณต้องการทำรายการ ใช่หรือไม่?')
+      .then(() => {
+        this.planningYear = event.target.value;
+        this.oldPlanningYear = event.target.value;
+        this.clearPlanningTmp();
+      })
+      .catch(() => {
+        this.planningYear = this.oldPlanningYear;
+      });
+  }
+
+  async clearPlanningTmp() {
+    try {
+      this.pmLoading.show();
+      const rs: any = await this.planningService.clearPlanningTmp(this._uuid);
+      if (rs.ok) {
+        this.getPlanningTmp();
+      } else {
+        this.alertService.error(rs.error);
+      }
+      this.pmLoading.hide();
+    } catch (error) {
+      this.alertService.error();
+      this.pmLoading.hide();
+    }
   }
 
   async deletePlanningTmp(item: any) {
@@ -138,7 +170,7 @@ export class PlanningNewComponent implements OnInit {
   async getPlanningTmp() {
     try {
       this.pmLoading.show();
-      const rs: any = await this.planningService.getPlanningTmp(this._uuid, this.query, this.perPage, this.offset);
+      const rs: any = await this.planningService.getPlanningTmp(this._uuid, this.query, this.genericType, this.perPage, this.offset);
       if (rs.ok) {
         this.plannings = rs.rows;
         this.planningTotal = rs.total;
@@ -326,6 +358,11 @@ export class PlanningNewComponent implements OnInit {
 
   refreshPlanning(state: State) {
     this.offset = +state.page.from;
+    this.getPlanningTmp();
+  }
+
+  async onSelectGenericType(event) {
+    this.genericType = event ? event.generic_type_id : '';
     this.getPlanningTmp();
   }
 

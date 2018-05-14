@@ -1,0 +1,6 @@
+<div class="select">
+  <select [(ngModel)]="genericType" name="genericType" (change)="onChangeGenericType($event)">
+    <option value="">ทั้งหมด</option>
+    <option [value]="t.generic_type_id" *ngFor="let t of genericTypes">{{t.generic_type_name}}</option>
+  </select>
+</div>

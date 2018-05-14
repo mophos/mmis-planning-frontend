@@ -73,7 +73,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6" style="padding-top: 5px;">
+  <div class="col-md-4" style="padding-top: 5px;">
     <label for="query">ค้นหา</label>
     <input type="text" placeholder="พิมพ์แล้วกด Enter" [(ngModel)]="query" (keyup)="enterSearch($event)" style="width: 300px;">
   </div>
@@ -82,23 +82,21 @@
       <div class="btn-group btn-outline-primary btn-sm">
         <button class="btn" (click)="onClickAdjustPlanning()" [disabled]="!totalAmount">ปรับแผน</button>
         <button class="btn" (click)="onClickExportPlanning()">ส่งออกข้อมูล</button>
+        <button class="btn" (click)="onClickUploadPlanning()">นำเข้าข้อมูล</button>
         <button class="btn" (click)="onClickPrintReport()">พิมพ์รายงานแผน</button>
       </div>
     </div>
   </div>
+  <div class="col-md-2" style="padding-top: 5px;">
+      <pm-select-generic-type (select)="onSelectGenericType($event)"></pm-select-generic-type>
+  </div>
 </div>
 
 <pm-adjust-planning #adjustModal (adjust)="processAdjustPlanning($event)"></pm-adjust-planning>
+<pm-upload-excel #uploadModal (upload)="processUploadPlanning($event)"></pm-upload-excel>
 
-<pm-datagrid-planning #dataGrid
-[year]="planningYear"
-[data]="plannings"
-[perPage]="perPage"
-[total]="planningTotal"
-(insert)="insertPlanningTmp($event)"
-(update)="updatePlanningTmp($event)"
-(delete)="deletePlanningTmp($event)"
-(refresh)="refreshPlanning($event)"></pm-datagrid-planning>
+<pm-datagrid-planning #dataGrid [year]="planningYear" [data]="plannings" [perPage]="perPage" [total]="planningTotal" (insert)="insertPlanningTmp($event)"
+  (update)="updatePlanningTmp($event)" (delete)="deletePlanningTmp($event)" (refresh)="refreshPlanning($event)"></pm-datagrid-planning>
 
 <clr-tabs>
   <clr-tab>
@@ -128,11 +126,11 @@
 </clr-tabs>
 
 <div>
-  <button type="button" (click)="savePlanning()" class="btn btn-sm btn-success" [disabled]="!planningYear || !planningName || !planningTotal">
-    <clr-icon shape="floppy"></clr-icon> บันทึกแผนฯ
-  </button>
   <button type="button" (click)="confirmPlanning()" class="btn btn-sm btn-primary" [disabled]="!planningYear || !planningName || !planningTotal">
     <clr-icon shape="success-standard"></clr-icon> ยืนยันแผนฯ
+  </button>
+  <button type="button" (click)="savePlanning()" class="btn btn-sm btn-success" [disabled]="!planningYear || !planningName || !planningTotal">
+    <clr-icon shape="floppy"></clr-icon> บันทึกแผนฯ
   </button>
   <button type="button" class="btn btn-sm btn-danger" [routerLink]="['/apps/planning']">
     <clr-icon shape="home"></clr-icon> กลับหน้าหลัก

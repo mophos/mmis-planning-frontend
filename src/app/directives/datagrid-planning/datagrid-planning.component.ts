@@ -58,6 +58,7 @@ export class DatagridPlanningComponent implements OnInit {
   selectedBidTypeName: any;
   selectedFreeze: any;
   selectedIsEdit: any;
+  selectedGenericType: any;
 
   constructor(
     private alertService: AlertService,
@@ -80,6 +81,7 @@ export class DatagridPlanningComponent implements OnInit {
     this.selectedGenericName = event ? event.generic_name : null;
     this.selectedBidTypeId = event ? event.planning_method : null;
     this.selectedFreeze = event ? event.planning_freeze ? true : false : null;
+    this.selectedGenericType = event ? event.generic_type_id : null;
 
     this.selectUnit.getUnits(this.selectedGenericId);
     this.selectBidType.getItems();
@@ -152,6 +154,7 @@ export class DatagridPlanningComponent implements OnInit {
       obj.bid_type_name = this.selectedBidTypeName;
       obj.freeze = this.selectedFreeze ? 'Y' : 'N';
       obj.is_edit = 'N';
+      obj.generic_type_id = this.selectedGenericType;
 
       if (this.selectedTmpId) {
         obj.tmp_id = this.selectedTmpId;
@@ -203,6 +206,7 @@ export class DatagridPlanningComponent implements OnInit {
     this.selectedFreeze = item.freeze === 'Y' ? true : false;
     this.selectedIsEdit = 'Y';
     this.selectedTmpId = item.tmp_id;
+    this.selectedGenericType = item.generic_type_id;
   }
 
   async deleteItem(item: any) {
@@ -266,6 +270,7 @@ export class DatagridPlanningComponent implements OnInit {
     this.selectedBidTypeId = null;
     this.selectedFreeze = null;
     this.selectedIsEdit = 'N';
+    this.selectedGenericType = null;
 
     this.selectUnit.clearUnits();
     this.searchGeneric.clearGenericSearch();

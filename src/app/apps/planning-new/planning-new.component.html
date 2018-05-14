@@ -15,7 +15,7 @@
             </div>
             <div class="col-md-8">
               <div class="select">
-                <select id="planningYear" [(ngModel)]="planningYear" name="planningYear" (change)="onChangePlanningYear()">
+                <select id="planningYear" [(ngModel)]="planningYear" name="planningYear" (focus)="onFocusPlanningYear($event)" (change)="onChangePlanningYear($event)">
                   <option value="">
                     กรุณาเลือกปีงบประมาณ
                   </option>
@@ -73,19 +73,23 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6" style="padding-top: 5px;">
+  <div class="col-md-4" style="padding-top: 5px;">
     <label for="query">ค้นหา</label>
     <input type="text" placeholder="พิมพ์แล้วกด Enter" [(ngModel)]="query" (keyup)="enterSearch($event)" style="width: 300px;">
   </div>
   <div class="col-md-6">
     <div class="text-right" style="padding-top: 5px;">
       <div class="btn-group btn-outline-primary btn-sm">
+        <button class="btn" (click)="processForecast()">คำนวณแผน</button>
         <button class="btn" (click)="onClickCopyPlanning()">คัดลอกแผน</button>
         <button class="btn" (click)="onClickUploadPlanning()">นำเข้าข้อมูล</button>
         <button class="btn" (click)="onClickMergePlanning()">รวมแผน</button>
         <button class="btn" (click)="onClickAdjustPlanning()" [disabled]="!totalAmount">ปรับแผน</button>
       </div>
     </div>
+  </div>
+  <div class="col-md-2" style="padding-top: 5px;">
+    <pm-select-generic-type (select)="onSelectGenericType($event)"></pm-select-generic-type>
   </div>
 </div>
 

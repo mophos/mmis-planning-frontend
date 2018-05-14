@@ -13,6 +13,7 @@ import { SearchGenericComponent } from './search-generic/search-generic.componen
 import { DatagridPlanningComponent } from './datagrid-planning/datagrid-planning.component';
 import { PipesModule } from '../pipes/pipes.module';
 import { ModalsModule } from '../modals/modals.module';
+import { SelectGenericTypeComponent } from './select-generic-type/select-generic-type.component';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import { ModalsModule } from '../modals/modals.module';
     SelectBidtypeComponent,
     HtmlPreviewComponent,
     SearchGenericComponent,
-    DatagridPlanningComponent
+    DatagridPlanningComponent,
+    SelectGenericTypeComponent
   ],
   exports: [
     SelectUnitComponent,
@@ -39,7 +41,8 @@ import { ModalsModule } from '../modals/modals.module';
     SelectBidtypeComponent,
     HtmlPreviewComponent,
     SearchGenericComponent,
-    DatagridPlanningComponent
+    DatagridPlanningComponent,
+    SelectGenericTypeComponent
   ],
   providers: [StandardService]
 })
