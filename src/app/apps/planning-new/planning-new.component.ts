@@ -47,6 +47,7 @@ export class PlanningNewComponent implements OnInit {
   oldPlanningYear: any;
   refHeaderId: any;
   query: any;
+  genericType: any;
 
   perPage = 10;
   offset = 0;
@@ -169,7 +170,7 @@ export class PlanningNewComponent implements OnInit {
   async getPlanningTmp() {
     try {
       this.pmLoading.show();
-      const rs: any = await this.planningService.getPlanningTmp(this._uuid, this.query, this.perPage, this.offset);
+      const rs: any = await this.planningService.getPlanningTmp(this._uuid, this.query, this.genericType, this.perPage, this.offset);
       if (rs.ok) {
         this.plannings = rs.rows;
         this.planningTotal = rs.total;
@@ -357,6 +358,11 @@ export class PlanningNewComponent implements OnInit {
 
   refreshPlanning(state: State) {
     this.offset = +state.page.from;
+    this.getPlanningTmp();
+  }
+
+  async onSelectGenericType(event) {
+    this.genericType = event ? event.generic_type_id : '';
     this.getPlanningTmp();
   }
 

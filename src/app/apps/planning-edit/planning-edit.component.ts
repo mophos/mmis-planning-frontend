@@ -46,6 +46,7 @@ export class PlanningEditComponent implements OnInit {
   planningYear: any;
   refHeaderId: any;
   query: any;
+  genericType: any;
 
   perPage = 5;
   offset = 0;
@@ -162,7 +163,7 @@ export class PlanningEditComponent implements OnInit {
   async getPlanningTmp() {
     try {
       this.pmLoading.show();
-      const rs: any = await this.planningService.getPlanningTmp(this._uuid, this.query, this.perPage, this.offset);
+      const rs: any = await this.planningService.getPlanningTmp(this._uuid, this.query, this.genericType, this.perPage, this.offset);
       if (rs.ok) {
         this.plannings = rs.rows;
         this.planningTotal = rs.total;
@@ -299,6 +300,11 @@ export class PlanningEditComponent implements OnInit {
       this.alertService.error();
       this.pmLoading.hide();
     }
+  }
+
+  async onSelectGenericType(event) {
+    this.genericType = event ? event.generic_type_id : '';
+    this.getPlanningTmp();
   }
 
 }

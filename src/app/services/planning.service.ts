@@ -67,8 +67,9 @@ export class PlanningService {
     return rs.json();
   }
 
-  async getPlanningTmp(_uuid: any, query: any, limit: number, offset: number) {
-    const rs: any = await this.authHttp.get(`${this.url}/planning/tmp?uuid=${_uuid}&query=${query}&limit=${limit}&offset=${offset}`)
+  async getPlanningTmp(_uuid: any, query: any, genericType: any, limit: number, offset: number) {
+    const rs: any = await
+      this.authHttp.get(`${this.url}/planning/tmp?uuid=${_uuid}&query=${query}&genericType=${genericType}&limit=${limit}&offset=${offset}`)
       .toPromise();
     return rs.json();
   }

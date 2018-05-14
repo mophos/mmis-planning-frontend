@@ -41,4 +41,11 @@ export class StandardService {
 
   }
 
+  async getGenericTypes() {
+    const rs = await this.authHttp.get(`${this.url}/standard/generic-types`)
+      .toPromise();
+    return rs.json();
+
+  }
+
 }
