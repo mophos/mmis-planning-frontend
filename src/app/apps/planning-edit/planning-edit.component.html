@@ -82,6 +82,7 @@
       <div class="btn-group btn-outline-primary btn-sm">
         <button class="btn" (click)="onClickAdjustPlanning()" [disabled]="!totalAmount">ปรับแผน</button>
         <button class="btn" (click)="onClickExportPlanning()">ส่งออกข้อมูล</button>
+        <button class="btn" (click)="onClickUploadPlanning()">นำเข้าข้อมูล</button>
         <button class="btn" (click)="onClickPrintReport()">พิมพ์รายงานแผน</button>
       </div>
     </div>
@@ -89,6 +90,7 @@
 </div>
 
 <pm-adjust-planning #adjustModal (adjust)="processAdjustPlanning($event)"></pm-adjust-planning>
+<pm-upload-excel #uploadModal (upload)="processUploadPlanning($event)"></pm-upload-excel>
 
 <pm-datagrid-planning #dataGrid
 [year]="planningYear"

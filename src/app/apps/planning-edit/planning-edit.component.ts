@@ -10,6 +10,8 @@ import { PlanningService } from '../../services/planning.service';
 import { LoadingComponent } from '../../modals/loading/loading.component';
 import { DatagridPlanningComponent } from '../../directives/datagrid-planning/datagrid-planning.component';
 import { AdjustPlanningComponent } from '../../modals/adjust-planning/adjust-planning.component';
+import { UploadExcelComponent } from '../../modals/upload-excel/upload-excel.component';
+import { UploadingService } from '../../services/uploading.service';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import * as uuid from 'uuid/v4';
@@ -27,6 +29,7 @@ export class PlanningEditComponent implements OnInit {
   @ViewChild('adjustModal') private adjustModal: AdjustPlanningComponent;
   @ViewChild('dataGrid') private dataGrid: DatagridPlanningComponent;
   @ViewChild('htmlPreview') private htmlPreview: any;
+  @ViewChild('uploadModal') private uploadModal: UploadExcelComponent;
 
   _token: any;
   _uuid: any;
@@ -53,7 +56,8 @@ export class PlanningEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private alertService: AlertService,
-    private planningService: PlanningService
+    private planningService: PlanningService,
+    private uploadingService: UploadingService,
   ) {
     this.planningHeaderId = this.route.snapshot.params.headerId;
     this._uuid = uuid();
@@ -269,6 +273,32 @@ export class PlanningEditComponent implements OnInit {
   onClickPrintReport() {
     const url = `${this.url}/planning/report/${this.planningHeaderId}?uuid=${this._uuid}&token=${this._token}`;
     this.htmlPreview.showReport(url);
+  }
+
+  onClickUploadPlanning() {
+    this.alertService.confirm('รายการที่มีอยู่จะถูกลบ คุณต้องการทำรายการ ใช่หรือไม่?')
+      .then(() => {
+        this.uploadModal.show();
+      })
+      .catch(() => { });
+  }
+
+  async processUploadPlanning(obj) {
+    try {
+      this.pmLoading.show();
+      const rs: any = await this.uploadingService.uploadPlanning(this._uuid, obj.file);
+      if (rs.ok) {
+        this.alertService.success();
+        this.uploadModal.hide();
+        this.getPlanningTmp();
+      } else {
+        this.alertService.error(rs.error);
+      }
+      this.pmLoading.hide();
+    } catch (error) {
+      this.alertService.error();
+      this.pmLoading.hide();
+    }
   }
 
 }
