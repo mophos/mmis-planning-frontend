@@ -12,6 +12,7 @@ import { DatagridPlanningComponent } from '../../directives/datagrid-planning/da
 import { AdjustPlanningComponent } from '../../modals/adjust-planning/adjust-planning.component';
 import { UploadExcelComponent } from '../../modals/upload-excel/upload-excel.component';
 import { UploadingService } from '../../services/uploading.service';
+import { BudgetService } from '../../services/budget.service';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import * as uuid from 'uuid/v4';
@@ -38,6 +39,7 @@ export class PlanningEditComponent implements OnInit {
   years = [];
   plannings = [];
   history = [];
+  budgetTypes = [];
 
   planningStatus: any = 'N';
   totalAmount = 0;
@@ -47,6 +49,7 @@ export class PlanningEditComponent implements OnInit {
   refHeaderId: any;
   query: any;
   genericType: any;
+  budgetTypeId: any;
 
   perPage = 5;
   offset = 0;
@@ -59,6 +62,7 @@ export class PlanningEditComponent implements OnInit {
     private alertService: AlertService,
     private planningService: PlanningService,
     private uploadingService: UploadingService,
+    private budgetService: BudgetService,
   ) {
     this.planningHeaderId = this.route.snapshot.params.headerId;
     this._uuid = uuid();
@@ -72,6 +76,24 @@ export class PlanningEditComponent implements OnInit {
     this.getPlanningHeaderInfo();
     this.getPlanningDetail();
     this.getPlanningHistory();
+    this.getBudgetType();
+  }
+
+  async getBudgetType() {
+    try {
+      this.pmLoading.show();
+      const rs: any = await this.budgetService.getBudgetType();
+      if (rs.ok) {
+        this.budgetTypes = rs.rows;
+        this.budgetTypeId = this.budgetTypes ? this.budgetTypes[0].bgtype_id : null;
+      } else {
+        this.alertService.error(rs.error);
+      }
+      this.pmLoading.hide();
+    } catch (error) {
+      this.pmLoading.hide();
+      this.alertService.serverError();
+    }
   }
 
   async getPlanningHeaderInfo() {

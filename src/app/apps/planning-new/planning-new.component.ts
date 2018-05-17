@@ -14,6 +14,7 @@ import { UploadExcelComponent } from '../../modals/upload-excel/upload-excel.com
 import { UploadingService } from '../../services/uploading.service';
 import { DatagridPlanningComponent } from '../../directives/datagrid-planning/datagrid-planning.component';
 import { MergePlanningComponent } from '../../modals/merge-planning/merge-planning.component';
+import { BudgetService } from '../../services/budget.service';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import * as uuid from 'uuid/v4';
@@ -38,6 +39,7 @@ export class PlanningNewComponent implements OnInit {
 
   years = [];
   plannings = [];
+  budgetTypes = [];
 
   planningStatus = 'N';
   totalAmount = 0;
@@ -48,6 +50,7 @@ export class PlanningNewComponent implements OnInit {
   refHeaderId: any;
   query: any;
   genericType: any;
+  budgetTypeId: any;
 
   perPage = 10;
   offset = 0;
@@ -58,6 +61,7 @@ export class PlanningNewComponent implements OnInit {
     private alertService: AlertService,
     private planningService: PlanningService,
     private uploadingService: UploadingService,
+    private budgetService: BudgetService,
   ) {
     this._uuid = uuid();
     console.log('_uuid', this._uuid);
@@ -67,6 +71,24 @@ export class PlanningNewComponent implements OnInit {
     const _min = new Date().getFullYear();
     this.years = Array.from(new Array(5), (x, i) => _min + i);
     this.oldPlanningYear = this.planningYear;
+    this.getBudgetType();
+  }
+
+  async getBudgetType() {
+    try {
+      this.pmLoading.show();
+      const rs: any = await this.budgetService.getBudgetType();
+      if (rs.ok) {
+        this.budgetTypes = rs.rows;
+        this.budgetTypeId = this.budgetTypes ? this.budgetTypes[0].bgtype_id : null;
+      } else {
+        this.alertService.error(rs.error);
+      }
+      this.pmLoading.hide();
+    } catch (error) {
+      this.pmLoading.hide();
+      this.alertService.serverError();
+    }
   }
 
   enterSearch(event: any) {
@@ -135,7 +157,8 @@ export class PlanningNewComponent implements OnInit {
         planningName: this.planningName,
         planningMemo: this.planningMemo,
         planningQty: this.planningTotal,
-        refHeaderId: this.refHeaderId
+        refHeaderId: this.refHeaderId,
+        budgetTypeId: this.budgetTypeId
       };
       const rs: any = await this.planningService.insertPlanning(_header, this._uuid);
       if (rs.ok) {
