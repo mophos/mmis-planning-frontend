@@ -31,6 +31,7 @@ export class BudgetComponent implements OnInit {
   disableBudgetYear = false;
   openBudgetModal = false;
   openSubBudgetModal = false;
+  openNewSubBudgetModal = false;
 
   selectedYear: any = moment().get('year') + (moment().get('month') > 8 ? 1 : 0);
   bugdetDetailId: any;
@@ -179,6 +180,7 @@ export class BudgetComponent implements OnInit {
   }
 
   private _initialBudgetDetail() {
+    this.budgetYear = this.selectedYear;
     this.bugdetDetailId = null;
     this.budgetTypeId = null;
     this.operationDate = null;
@@ -280,6 +282,7 @@ export class BudgetComponent implements OnInit {
             if (rs.ok) {
               this.alertService.success();
               this.openBudgetModal = false;
+              this.getBudgetYear();
               this.getBudgetDetail();
             } else {
               this.alertService.error(rs.error);
@@ -404,6 +407,16 @@ export class BudgetComponent implements OnInit {
     } else {
       this.alertService.error('กรุณาระบุข้อมูลให้ครบถ้วน');
     }
+  }
+
+  addNewTransaction() {
+    this.disableBudgetYear = false;
+    this._initialBudgetDetail();
+    this.openNewSubBudgetModal = true;
+  }
+
+  onChangeBudgetDetail() {
+    console.log(this.budgetList, this.selectedBudgetDetailId)
   }
 
 }
