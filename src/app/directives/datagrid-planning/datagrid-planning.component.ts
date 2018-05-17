@@ -79,15 +79,19 @@ export class DatagridPlanningComponent implements OnInit {
   onSelecteGeneric(event: any) {
     this.selectedGenericId = event ? event.generic_id : null;
     this.selectedGenericName = event ? event.generic_name : null;
-    this.selectedBidTypeId = event ? event.planning_method : null;
+    this.selectedBidTypeId = event ? event.purchasing_method : null;
     this.selectedFreeze = event ? event.planning_freeze ? true : false : null;
     this.selectedGenericType = event ? event.generic_type_id : null;
+    this.selectedUnitGenericId = event ? event.planning_unit_generic_id : null;
 
+    this.selectUnit.setSelectedUnit(this.selectedUnitGenericId);
     this.selectUnit.getUnits(this.selectedGenericId);
+    this.selectBidType.setSelectedBidType(this.selectedBidTypeId);
     this.selectBidType.getItems();
   }
 
   onChangeUnit(event: any) {
+    console.log('event', event)
     this.selectedCost = event ? +event.cost : null;
     this.selectedUnitGenericId = event ? event.unit_generic_id : null;
     this.selectedConversionQty = event ? +event.qty : null;
@@ -235,7 +239,7 @@ export class DatagridPlanningComponent implements OnInit {
         this.alertService.error(rs.error);
       }
     } catch (error) {
-      this.alertService.error();
+      this.alertService.error(error);
     }
   }
 
