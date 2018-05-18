@@ -6,9 +6,7 @@
     "ng": "npx ng",
     "start": "npx ng serve",
     "build": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --target production --environment prod --build-optimizer --base-href=./",
-    "test": "npx ng test",
-    "lint": "npx ng lint",
-    "e2e": "npx ng e2e"
+    "pack:dist": "npx cpx 'dist/**/*' ../mmis-frontend-dist/planning"
   },
   "private": true,
   "dependencies": {
