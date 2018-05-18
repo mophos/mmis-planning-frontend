@@ -25,16 +25,33 @@
             </div>
           </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-4">
           <div class="form-group row">
-            <div class="col-md-2">
+            <div class="col-md-4">
               <label class="required" for="planningName">ชื่อแผน</label>
             </div>
-            <div class="col-md-10">
-              <input type="text" id="planningName" name="planningName" [(ngModel)]="planningName" size="50" [disabled]="planningHeaderId">
+            <div class="col-md-8">
+              <input type="text" id="planningName" name="planningName" [(ngModel)]="planningName" size="30" [disabled]="planningHeaderId">
             </div>
           </div>
         </div>
+        <div class="col-md-4">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <label class="required" for="planningYear">งบประมาณ</label>
+              </div>
+              <div class="col-md-8">
+                  <div class="select form-control">
+                  <select id="typeName" [(ngModel)]="budgetTypeId" name="typeName" [disabled]="planningHeaderId">
+                    <option value="">
+                      <กรุณาเลือกงบประมาณ>
+                    </option>
+                    <option *ngFor="let t of budgetTypes" [value]="t.bgtype_id">{{t.bgtype_name}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
       <div class="row">
         <div class="col-md-4">

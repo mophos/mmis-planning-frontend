@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angu
 import { State } from '@clr/angular';
 import { SelectUnitComponent } from '../../directives/select-unit/select-unit.component';
 import { SearchGenericComponent } from '../../directives/search-generic/search-generic.component';
-import { SelectBidtypeComponent } from '../../directives/select-bidtype/select-bidtype.component';
-import { BidType } from '../../interfaces/bid-type';
+// import { SelectBidtypeComponent } from '../../directives/select-bidtype/select-bidtype.component';
+// import { BidType } from '../../interfaces/bid-type';
 import { AlertService } from '../../services/alert.service';
 import { PlanningService } from '../../services/planning.service';
 import * as moment from 'moment';
@@ -29,7 +29,7 @@ export class DatagridPlanningComponent implements OnInit {
   @Output('refresh') refresh: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('selectUnit') selectUnit: SelectUnitComponent;
-  @ViewChild('selectBidType') selectBidType: SelectBidtypeComponent;
+  // @ViewChild('selectBidType') selectBidType: SelectBidtypeComponent;
   @ViewChild('searchGeneric') searchGeneric: SearchGenericComponent;
   @ViewChild('pagination') pagination: any;
 
@@ -54,8 +54,8 @@ export class DatagridPlanningComponent implements OnInit {
   selectedQ4: number = null;
   selectedQty: number = null;
   selectedAmount: number = null;
-  selectedBidTypeId: any;
-  selectedBidTypeName: any;
+  // selectedBidTypeId: any;
+  // selectedBidTypeName: any;
   selectedFreeze: any;
   selectedIsEdit: any;
   selectedGenericType: any;
@@ -79,15 +79,19 @@ export class DatagridPlanningComponent implements OnInit {
   onSelecteGeneric(event: any) {
     this.selectedGenericId = event ? event.generic_id : null;
     this.selectedGenericName = event ? event.generic_name : null;
-    this.selectedBidTypeId = event ? event.planning_method : null;
+    // this.selectedBidTypeId = event ? event.purchasing_method : null;
     this.selectedFreeze = event ? event.planning_freeze ? true : false : null;
     this.selectedGenericType = event ? event.generic_type_id : null;
+    this.selectedUnitGenericId = event ? event.planning_unit_generic_id : null;
 
+    this.selectUnit.setSelectedUnit(this.selectedUnitGenericId);
     this.selectUnit.getUnits(this.selectedGenericId);
-    this.selectBidType.getItems();
+    // this.selectBidType.setSelectedBidType(this.selectedBidTypeId);
+    // this.selectBidType.getItems();
   }
 
   onChangeUnit(event: any) {
+    console.log('event', event)
     this.selectedCost = event ? +event.cost : null;
     this.selectedUnitGenericId = event ? event.unit_generic_id : null;
     this.selectedConversionQty = event ? +event.qty : null;
@@ -96,10 +100,10 @@ export class DatagridPlanningComponent implements OnInit {
     this.getForecast();
   }
 
-  onChangeBidType(event: BidType) {
-    this.selectedBidTypeId = event ? event.bid_id : null;
-    this.selectedBidTypeName = event ? event.bid_name : null;
-  }
+  // onChangeBidType(event: BidType) {
+  //   this.selectedBidTypeId = event ? event.bid_id : null;
+  //   this.selectedBidTypeName = event ? event.bid_name : null;
+  // }
 
   onInputQty() {
     this.selectedQty = +this.selectedQ1 + +this.selectedQ2 + +this.selectedQ3 + +this.selectedQ4;
@@ -128,7 +132,7 @@ export class DatagridPlanningComponent implements OnInit {
   }
 
   addItem() {
-    if (this.selectedCost && this.selectedGenericId && this.selectedUnitGenericId && this.selectedBidTypeId) {
+    if (this.selectedCost && this.selectedGenericId && this.selectedUnitGenericId) {
       let obj: any = {};
       obj.generic_id = this.selectedGenericId;
       obj.generic_name = this.selectedGenericName;
@@ -150,8 +154,8 @@ export class DatagridPlanningComponent implements OnInit {
       obj.q4 = this.selectedQ4;
       obj.qty = this.selectedQty; //q1+q2+q3+q4
       obj.amount = this.selectedAmount; //qty*unit_cost
-      obj.bid_type_id = this.selectedBidTypeId;
-      obj.bid_type_name = this.selectedBidTypeName;
+      // obj.bid_type_id = this.selectedBidTypeId;
+      // obj.bid_type_name = this.selectedBidTypeName;
       obj.freeze = this.selectedFreeze ? 'Y' : 'N';
       obj.is_edit = 'N';
       obj.generic_type_id = this.selectedGenericType;
@@ -200,9 +204,9 @@ export class DatagridPlanningComponent implements OnInit {
     this.selectedQ4 = item.q4;
     this.selectedQty = item.qty;
     this.selectedAmount = item.amount;
-    this.selectBidType.setSelectedBidType(item.bid_type_id);
-    this.selectBidType.getItems();
-    this.selectedBidTypeId = item.bid_type_id;
+    // this.selectBidType.setSelectedBidType(item.bid_type_id);
+    // this.selectBidType.getItems();
+    // this.selectedBidTypeId = item.bid_type_id;
     this.selectedFreeze = item.freeze === 'Y' ? true : false;
     this.selectedIsEdit = 'Y';
     this.selectedTmpId = item.tmp_id;
@@ -235,7 +239,7 @@ export class DatagridPlanningComponent implements OnInit {
         this.alertService.error(rs.error);
       }
     } catch (error) {
-      this.alertService.error();
+      this.alertService.error(error);
     }
   }
 
@@ -267,14 +271,14 @@ export class DatagridPlanningComponent implements OnInit {
     this.selectedQ4 = null;
     this.selectedQty = null;
     this.selectedAmount = null;
-    this.selectedBidTypeId = null;
+    // this.selectedBidTypeId = null;
     this.selectedFreeze = null;
     this.selectedIsEdit = 'N';
     this.selectedGenericType = null;
 
     this.selectUnit.clearUnits();
     this.searchGeneric.clearGenericSearch();
-    this.selectBidType.clearBidtype();
+    // this.selectBidType.clearBidtype();
   }
 
   refreshPlanning(state: State) {

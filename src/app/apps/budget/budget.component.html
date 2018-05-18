@@ -53,7 +53,7 @@
           <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell>{{b.remark}}</clr-dg-cell>
           <clr-dg-cell style="text-align: center;">
-            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editBudgetDetail(b)">
+            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editBudgetDetail(b)" [disabled]="b.status==='APPROVE'">
               <clr-icon shape="note"></clr-icon>
             </button>
           </clr-dg-cell>
@@ -96,8 +96,18 @@
   <clr-tab>
     <button clrTabLink id="total" (click)="getTotalSubBudget()">หมวดงบประมาณย่อยรวม</button>
     <clr-tab-content id="total" *clrIfActive>
-      <button class="btn btn-sm" (click)="printReportBudget()">
-        <clr-icon shape="printer"></clr-icon> พิมพ์รายงานงบประมาณย่อยรวม</button>
+      <div class="row">
+        <div class="col-md-6">
+          <!-- <button class="btn btn-success btn-sm btn-icon" style="margin-top: 5px;" (click)="addNewTransaction()">
+            <clr-icon shape="plus"></clr-icon> เพิ่มงบประมาณยกมา
+          </button> -->
+        </div>
+        <div class="col-md-6" style="text-align: right;">
+          <button class="btn btn-sm" (click)="printReportBudget()">
+            <clr-icon shape="printer"></clr-icon> พิมพ์รายงานงบประมาณย่อยรวม
+          </button>
+        </div>
+      </div>
       <clr-datagrid style="height: 80%;" [clrDgLoading]="loading">
         <clr-dg-column [style.width.px]="100">ปีงบประมาณ</clr-dg-column>
         <clr-dg-column [clrDgField]="'bgtype_name'">หมวดงบประมาณ</clr-dg-column>
@@ -162,8 +172,8 @@
           <clr-dg-cell>{{b.purchase_order_number}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.incoming_balance | number:'1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">
-              <span *ngIf="b.amount < 0">{{b.amount | number:'1.2-2'}}</span>
-              <span *ngIf="b.amount >= 0">-</span>
+            <span *ngIf="b.amount < 0">{{b.amount | number:'1.2-2'}}</span>
+            <span *ngIf="b.amount >= 0">-</span>
           </clr-dg-cell>
           <clr-dg-cell style="text-align: right;">
             <span *ngIf="b.amount < 0">-</span>
@@ -325,7 +335,8 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotal">จำนวนเงินคงเหลือ</label>
-            <input class="form-control" type="text" name="bgTotal" value="{{budgetAmount - (orderAmount - spendAmount) | number : '1.2-2'}}" disabled>
+            <input class="form-control" type="text" name="bgTotal" value="{{budgetAmount - (orderAmount - spendAmount) | number : '1.2-2'}}"
+              disabled>
           </div>
         </div>
         <div class="col-md-6">
@@ -351,6 +362,88 @@
       บันทึก
     </button>
     <button class="btn btn-danger-outline" (click)="openSubBudgetModal = false">
+      ปิด
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="openNewSubBudgetModal" [clrModalClosable]="false" [clrModalSize]="'lg'">
+  <h3 class="modal-title">เพิ่ม ยอดงบประมาณยกมา</h3>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="bgYear">ปีงบประมาณ</label>
+            <div class="select form-control">
+              <select id="bgYear" [(ngModel)]="budgetYear" name="bgYear" [disabled]="disableBudgetYear">
+                <option value="">
+                  <กรุณาเลือกปีงบประมาณ>
+                </option>
+                <option *ngFor="let y of years" [value]="y">{{y | toThaiDate: 'Y'}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group" style="padding-left: 150px;">
+              <label class="required" for="bgDetailId">งบประมาณ</label>
+              <div class="select form-control">
+                <select id="bgDetailId" [(ngModel)]="selectedBudgetDetailId" name="bgDetailId" (change)="onChangeBudgetDetail()">
+                  <option value="">
+                    <กรุณาเลือกงบประมาณ>
+                  </option>
+                  <option [value]="b.bgdetail_id" *ngFor="let b of budgetList">{{b.budget_desc}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-6">
+              <div class="form-group" style="padding-left: 150px;">
+                <label for="bgAmount">จำนวนเงินที่จัดสรร</label>
+                <input class="form-control" type="text" name="bgAmount" value="{{budgetAmount | number : '1.2-2'}}" disabled>
+              </div>
+            </div>
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="ordAmount">จำนวนเงินที่ใช้ไป</label>
+            <input class="form-control" type="text" name="ordAmount" [(ngModel)]="orderAmount" pmNumberOnly>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="bgTotal">จำนวนเงินคงเหลือ</label>
+            <input class="form-control" type="text" name="bgTotal" value="{{budgetAmount - (orderAmount - spendAmount) | number : '1.2-2'}}"
+              disabled>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group" style="padding-left: 150px;">
+            <label for="bgTotalPercent">คงเหลือ (%)</label>
+            <input class="form-control" type="text" name="bgTotalPercent" value="{{(100 / budgetAmount * (budgetAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
+              disabled>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group" style="padding-left: 150px;">
+            <label class="required" for="bgRemark">หมายเหตุ</label>
+            <input class="form-control" type="text" id="bgRemark" [(ngModel)]="budgetRemark" name="bgRemark">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="saveTotalSubBudget()" [disabled]="!bugdetDetailId || !spendAmount || spendAmount === '.' || !budgetRemark">
+      บันทึก
+    </button>
+    <button class="btn btn-danger-outline" (click)="openNewSubBudgetModal = false">
       ปิด
     </button>
   </div>
