@@ -1,17 +1,17 @@
 import { Directive, HostListener, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[pmNumberOnly]'
+  selector: '[pmNumberNegative]'
 })
-export class NumberOnlyDirective {
+export class NumberNegativeDirective {
 
-  private regex: RegExp = new RegExp(/^[0-9]+(\.[0-9]*){0,1}$/g);
+  private regex: RegExp = new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g);
   constructor(private el: ElementRef) { }
 
   @HostListener('keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
     const e: any = <KeyboardEvent>event;
-    if ([46, 8, 9, 27, 13, 110, 190, 222].indexOf(e.keyCode) !== -1 ||
+    if ([46, 8, 9, 27, 13, 110, 189, 190, 222].indexOf(e.keyCode) !== -1 ||
       // Allow: Ctrl+A
       (e.keyCode == 65 && e.ctrlKey === true) ||
       // Allow: Ctrl+C
@@ -31,7 +31,7 @@ export class NumberOnlyDirective {
     const regEx = new RegExp(this.regex);
     if (isNaN(+e.key) && (e.keyCode !== 110 || e.keyCode !== 190 || e.keyCode !== 222)) {
       e.preventDefault();
-    } else if (regEx.test(ch)){
+    } else if (regEx.test(ch)) {
       return;
     } else {
       e.preventDefault();
