@@ -48,6 +48,7 @@ export class BudgetComponent implements OnInit {
 
   budgetTypeName: any;
   budgetSubTypeName: any;
+  totalAmount: any;
   orderAmount: any;
   spendAmount: any;
 
@@ -372,7 +373,7 @@ export class BudgetComponent implements OnInit {
     this.budgetYear = b.bg_year;
     this.budgetTypeName = b.bgtype_name;
     this.budgetSubTypeName = b.bgtypesub_name;
-    this.budgetAmount = b.amount;
+    this.totalAmount = b.amount;
     this.orderAmount = b.order_amt;
     this.spendAmount = 0;
     this.budgetRemark = null;
@@ -387,7 +388,7 @@ export class BudgetComponent implements OnInit {
             this.pmLoading.show();
             let data: any = {};
             data.bugdetDetailId = this.bugdetDetailId;
-            data.incomingBalance = this.budgetAmount - this.orderAmount;
+            data.incomingBalance = this.totalAmount - this.orderAmount;
             data.spendAmount = this.spendAmount * -1;
             data.remark = this.budgetRemark;
             const rs: any = await this.budgetService.insertBudgetTransaction(data);

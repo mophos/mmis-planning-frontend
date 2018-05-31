@@ -14,6 +14,7 @@ import { DatagridPlanningComponent } from './datagrid-planning/datagrid-planning
 import { PipesModule } from '../pipes/pipes.module';
 import { ModalsModule } from '../modals/modals.module';
 import { SelectGenericTypeComponent } from './select-generic-type/select-generic-type.component';
+import { NumberNegativeDirective } from './number-negative.directive';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { SelectGenericTypeComponent } from './select-generic-type/select-generic
     HtmlPreviewComponent,
     SearchGenericComponent,
     DatagridPlanningComponent,
-    SelectGenericTypeComponent
+    SelectGenericTypeComponent,
+    NumberNegativeDirective
   ],
   exports: [
     SelectUnitComponent,
@@ -42,7 +44,8 @@ import { SelectGenericTypeComponent } from './select-generic-type/select-generic
     HtmlPreviewComponent,
     SearchGenericComponent,
     DatagridPlanningComponent,
-    SelectGenericTypeComponent
+    SelectGenericTypeComponent,
+    NumberNegativeDirective
   ],
   providers: [StandardService]
 })

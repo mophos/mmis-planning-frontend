@@ -267,7 +267,7 @@
         <div class="col-md-12">
           <div class="form-group" style="padding-left: 150px;">
             <label class="required" for="bgAmount">จำนวนเงิน (บาท)</label>
-            <input class="form-control" type="text" id="bgAmount" [(ngModel)]="budgetAmount" name="bgAmount" pmNumberOnly>
+            <input class="form-control" type="text" id="bgAmount" [(ngModel)]="budgetAmount" name="bgAmount" pmNumberNegative>
           </div>
         </div>
       </div>
@@ -313,7 +313,7 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgAmount">จำนวนเงินที่จัดสรร</label>
-            <input class="form-control" type="text" name="bgAmount" value="{{budgetAmount | number : '1.2-2'}}" disabled>
+            <input class="form-control" type="text" name="bgAmount" value="{{totalAmount | number : '1.2-2'}}" disabled>
           </div>
         </div>
       </div>
@@ -335,14 +335,14 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotal">จำนวนเงินคงเหลือ</label>
-            <input class="form-control" type="text" name="bgTotal" value="{{budgetAmount - (orderAmount - spendAmount) | number : '1.2-2'}}"
+            <input class="form-control" type="text" name="bgTotal" value="{{totalAmount - (orderAmount - spendAmount) | number : '1.2-2'}}"
               disabled>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotalPercent">คงเหลือ (%)</label>
-            <input class="form-control" type="text" name="bgTotalPercent" value="{{(100 / budgetAmount * (budgetAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
+            <input class="form-control" type="text" name="bgTotalPercent" value="{{(100 / totalAmount * (totalAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
               disabled>
           </div>
         </div>
@@ -403,7 +403,7 @@
           <div class="col-md-6">
               <div class="form-group" style="padding-left: 150px;">
                 <label for="bgAmount">จำนวนเงินที่จัดสรร</label>
-                <input class="form-control" type="text" name="bgAmount" value="{{budgetAmount | number : '1.2-2'}}" disabled>
+                <input class="form-control" type="text" name="bgAmount" value="{{totalAmount | number : '1.2-2'}}" disabled>
               </div>
             </div>
         <div class="col-md-6">
@@ -417,14 +417,14 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotal">จำนวนเงินคงเหลือ</label>
-            <input class="form-control" type="text" name="bgTotal" value="{{budgetAmount - (orderAmount - spendAmount) | number : '1.2-2'}}"
+            <input class="form-control" type="text" name="bgTotal" value="{{totalAmount - (orderAmount - spendAmount) | number : '1.2-2'}}"
               disabled>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotalPercent">คงเหลือ (%)</label>
-            <input class="form-control" type="text" name="bgTotalPercent" value="{{(100 / budgetAmount * (budgetAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
+            <input class="form-control" type="text" name="bgTotalPercent" value="{{(100 / totalAmount * (totalAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
               disabled>
           </div>
         </div>
