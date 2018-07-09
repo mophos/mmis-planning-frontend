@@ -32,7 +32,7 @@ export class LayoutComponent implements OnInit {
     @Inject('HOME_URL') private homeUrl: string
   ) {
     this.token = sessionStorage.getItem('token');
-    let decoded = this.jwtHelper.decodeToken(this.token);
+    const decoded = this.jwtHelper.decodeToken(this.token);
     this.fullname = decoded.fullname;
 
     const token = sessionStorage.getItem('token');
@@ -63,7 +63,7 @@ export class LayoutComponent implements OnInit {
 
   logout() {
     sessionStorage.removeItem('token');
-    this.router.navigate(['/']);
+    location.href = this.homeUrl;
   }
 
   openChangePasswordModal() {
