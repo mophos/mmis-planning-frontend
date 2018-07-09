@@ -11,8 +11,8 @@ import * as _ from 'lodash';
 })
 export class LayoutComponent implements OnInit {
 
-  collapsible: boolean = true;
-  collapse: boolean = true;
+  collapsible = true;
+  collapse = true;
   fullname: string;
 
   jwtHelper: JwtHelper = new JwtHelper();
