@@ -52,8 +52,8 @@ export class PlanningService {
     return rs.json();
   }
 
-  async getForecast(genericId: any, forecastYear: any) {
-    const rs: any = await this.authHttp.get(`${this.url}/planning/forecast/${genericId}/${forecastYear}`)
+  async getForecast(genericId: any, forecastYear: any, tmpId: any) {
+    const rs: any = await this.authHttp.get(`${this.url}/planning/forecast/${genericId}/${forecastYear}?tmpId=${tmpId}`)
       .toPromise();
     return rs.json();
   }
