@@ -109,11 +109,27 @@ export class PlanningNewComponent implements OnInit {
       .then(() => {
         this.planningYear = event.target.value;
         this.oldPlanningYear = event.target.value;
-        this.clearPlanningTmp();
+        this.callForecast();
       })
       .catch(() => {
         this.planningYear = this.oldPlanningYear;
       });
+  }
+
+  async callForecast() {
+    try {
+      this.pmLoading.show();
+      const rs: any = await this.planningService.callForecast(this.planningYear);
+      if (rs.ok) {
+        this.clearPlanningTmp();
+      } else {
+        this.alertService.error(rs.error);
+      }
+      this.pmLoading.hide();
+    } catch (error) {
+      this.pmLoading.hide();
+      this.alertService.serverError();
+    }
   }
 
   async clearPlanningTmp() {
@@ -327,7 +343,7 @@ export class PlanningNewComponent implements OnInit {
   async processCopyPlanning(obj) {
     try {
       this.pmLoading.show();
-      const rs: any = await this.planningService.processCopyPercent(obj.headerId, obj.percent, this._uuid);
+      const rs: any = await this.planningService.processCopyPercent(obj.headerId, obj.percent, this.planningYear, this._uuid);
       if (rs.ok) {
         this.alertService.success();
         this.copyModal.hide();

@@ -17,6 +17,9 @@ export class LoginComponent implements OnInit {
   jwtHelper: JwtHelper = new JwtHelper();
   isLogging: boolean = false;
 
+  warehouses = [];
+  warehouseId: any;
+
   token: string;
 
   constructor(
@@ -57,7 +60,7 @@ export class LoginComponent implements OnInit {
     if (this.username && this.password) {
       this.isLogging = true;
       try {
-        let rs: any = await this.loginService.doLogin(this.username, this.password);
+        let rs: any = await this.loginService.doLogin(this.username, this.password, this.warehouseId);
         this.isLogging = false;
         if (rs.ok) {
           const token: any = rs.token || null;
@@ -79,6 +82,17 @@ export class LoginComponent implements OnInit {
         this.isLogging = false;
         this.alertService.error(JSON.stringify(error));
       }
+    }
+  }
+
+  async selectWarehouse(event) {
+    const rs: any = await this.loginService.searchWarehouse(this.username);
+    if (rs.ok) {
+      this.warehouses = rs.rows;
+      this.warehouseId = rs.rows[0].warehouse_id;
+    } else {
+      this.warehouses = [];
+      this.warehouseId = null;
     }
   }
 }

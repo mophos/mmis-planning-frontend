@@ -219,7 +219,7 @@ export class DatagridPlanningComponent implements OnInit {
 
   async getForecast() {
     try {
-      const rs: any = await this.planningService.getForecast(this.selectedGenericId, this.planningYear);
+      const rs: any = await this.planningService.getForecast(this.selectedGenericId, this.planningYear, this.selectedTmpId);
       if (rs.ok) {
         const data = rs.rows[0];
         this.selectedRate3Year = Math.round(data.sumy3 / this.selectedConversionQty);
