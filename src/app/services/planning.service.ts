@@ -113,10 +113,11 @@ export class PlanningService {
     return rs.json();
   }
 
-  async processCopyPercent(headerId: any, percent: any, _uuid: any) {
+  async processCopyPercent(headerId: any, percent: any, planningYear: any, _uuid: any) {
     const rs: any = await this.authHttp.post(`${this.url}/planning/copy`, {
       headerId: headerId,
       percent: percent,
+      year: planningYear,
       uuid: _uuid
     })
       .toPromise();
@@ -135,6 +136,13 @@ export class PlanningService {
   async clearPlanningTmp(_uuid: any) {
     const rs: any = await this.authHttp.post(`${this.url}/planning/clear-tmp`, {
       uuid: _uuid
+    }).toPromise();
+    return rs.json();
+  }
+
+  async callForecast(planningYear: any) {
+    const rs: any = await this.authHttp.post(`${this.url}/planning/forecast`, {
+      year: planningYear
     }).toPromise();
     return rs.json();
   }
