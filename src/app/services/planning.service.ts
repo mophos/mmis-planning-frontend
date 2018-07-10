@@ -21,7 +21,7 @@ export class PlanningService {
   }
 
   async getPlanningDetail(headerId: any, _uuid: any) {
-    const rs: any = await this.authHttp.get(`${this.url}/planning/detail/${headerId}/?uuid=${_uuid}`).toPromise();
+    const rs: any = await this.authHttp.get(`${this.url}/planning/detail/${headerId}?uuid=${_uuid}`).toPromise();
     return rs.json();
   }
 
