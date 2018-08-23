@@ -8,11 +8,11 @@ export class LoginService {
   constructor(
     @Inject('LOGIN_URL') private url: string, private http: Http) { }
 
-  async doLogin(username: any, password: any, warehouseId) {
+  async doLogin(username: any, password: any, userWarehouseId) {
     let rs: any = await this.http.post(`${this.url}/login`, {
       username: username,
       password: password,
-      warehouseId: warehouseId
+      userWarehouseId: userWarehouseId
     }).toPromise();
     return rs.json();
   }
