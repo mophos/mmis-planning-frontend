@@ -58,8 +58,9 @@ export class PlanningService {
     return rs.json();
   }
 
-  async processForecast(planningYear: any, _uuid: any) {
+  async processForecast(planningYear: any, _uuid: any, genericTypeIds: any) {
     const rs: any = await this.authHttp.post(`${this.url}/planning/process`, {
+      genericTypeIds: genericTypeIds,
       year: planningYear,
       uuid: _uuid
     })
