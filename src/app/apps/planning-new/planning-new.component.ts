@@ -86,6 +86,7 @@ export class PlanningNewComponent implements OnInit {
       if (rs.ok) {
         this.budgetTypes = rs.rows;
         this.budgetTypeId = this.budgetTypes ? this.budgetTypes[0].bgtype_id : null;
+        this.callForecast();
       } else {
         this.alertService.error(rs.error);
       }
