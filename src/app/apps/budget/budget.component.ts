@@ -65,6 +65,7 @@ export class BudgetComponent implements OnInit {
     private alertService: AlertService,
   ) {
     this.token = sessionStorage.getItem('token');
+
   }
 
   ngOnInit() {
@@ -418,6 +419,11 @@ export class BudgetComponent implements OnInit {
 
   onChangeBudgetDetail() {
     console.log(this.budgetList, this.selectedBudgetDetailId)
+  }
+
+  exportBudgetDetail() {
+    const url = this.url + `/budget/export/${this.selectedYear}?token=${this.token}`;
+    window.open(url, '_blank');
   }
 
 }
