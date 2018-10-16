@@ -29,10 +29,11 @@
           </button>
         </div>
         <div class="col-md-6" style="text-align: right;">
-          <button class="btn btn-primary btn-sm btn-icon" style="margin-top: 10px;" (click)="exportBudgetDetail()">
-            ส่งออกงบประมาณ
+          <button class="btn btn-success btn-sm btn-icon" style="margin-top: 10px;" (click)="exportBudgetDetail()">
+            <clr-icon shape="download"></clr-icon> ส่งออกงบประมาณ
           </button>
-          <button class="btn btn-primary btn-sm btn-icon" style="margin-top: 10px;" [disabled]="!selectedApprove.length" (click)="approveBudgetDetail()">
+          <button class="btn btn-primary btn-sm btn-icon" style="margin-top: 10px;" [disabled]="!selectedApprove.length"
+            (click)="approveBudgetDetail()">
             อนุมัติงบประมาณ
           </button>
         </div>
@@ -56,7 +57,8 @@
           <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell>{{b.remark}}</clr-dg-cell>
           <clr-dg-cell style="text-align: center;">
-            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editBudgetDetail(b)" [disabled]="b.status==='APPROVE'">
+            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editBudgetDetail(b)"
+              [disabled]="b.status==='APPROVE'">
               <clr-icon shape="note"></clr-icon>
             </button>
           </clr-dg-cell>
@@ -86,7 +88,8 @@
           <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.order_amt | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.amount - b.order_amt | number : '1.2-2'}}</clr-dg-cell>
-          <clr-dg-cell style="text-align: right;">{{(100 / b.amount * (b.amount - b.order_amt)) / 100 | percent:'1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{(100 / b.amount * (b.amount - b.order_amt)) / 100 |
+            percent:'1.2-2'}}</clr-dg-cell>
         </clr-dg-row>
 
         <clr-dg-footer>
@@ -128,7 +131,8 @@
           <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.order_amt | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: right;">{{b.amount - b.order_amt | number : '1.2-2'}}</clr-dg-cell>
-          <clr-dg-cell style="text-align: right;">{{(100 / b.amount * (b.amount - b.order_amt)) / 100 | percent:'1.2-2'}}</clr-dg-cell>
+          <clr-dg-cell style="text-align: right;">{{(100 / b.amount * (b.amount - b.order_amt)) / 100 |
+            percent:'1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: center;">
             <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editTotalSubBudget(b)">
               <clr-icon shape="note"></clr-icon>
@@ -247,7 +251,8 @@
         <div class="col-md-12">
           <div class="form-group" style="padding-left: 150px;">
             <label class="required" for="odDate">วันที่ได้รับงบประมาณ</label>
-            <my-date-picker-th id="odDate" name="odDate" [options]="myDatePickerOptions" [(ngModel)]="operationDate" required></my-date-picker-th>
+            <my-date-picker-th id="odDate" name="odDate" [options]="myDatePickerOptions" [(ngModel)]="operationDate"
+              required></my-date-picker-th>
           </div>
         </div>
       </div>
@@ -270,7 +275,8 @@
         <div class="col-md-12">
           <div class="form-group" style="padding-left: 150px;">
             <label class="required" for="bgAmount">จำนวนเงิน (บาท)</label>
-            <input class="form-control" type="text" id="bgAmount" [(ngModel)]="budgetAmount" name="bgAmount" pmNumberNegative>
+            <input class="form-control" type="text" id="bgAmount" [(ngModel)]="budgetAmount" name="bgAmount"
+              pmNumberNegative>
           </div>
         </div>
       </div>
@@ -310,7 +316,8 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="budget">งบประมาณ</label>
-            <input class="form-control" type="text" name="budget" value="{{budgetTypeName}} - {{budgetSubTypeName}}" disabled>
+            <input class="form-control" type="text" name="budget" value="{{budgetTypeName}} - {{budgetSubTypeName}}"
+              disabled>
           </div>
         </div>
         <div class="col-md-6">
@@ -330,7 +337,8 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="ordAmount">จำนวนเงินที่ใช้ไป</label>
-            <input class="form-control" type="text" name="ordAmount" value="{{orderAmount - spendAmount | number : '1.2-2'}}" disabled>
+            <input class="form-control" type="text" name="ordAmount" value="{{orderAmount - spendAmount | number : '1.2-2'}}"
+              disabled>
           </div>
         </div>
       </div>
