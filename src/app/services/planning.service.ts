@@ -71,7 +71,7 @@ export class PlanningService {
   async getPlanningTmp(_uuid: any, query: any, genericType: any, limit: number, offset: number) {
     const rs: any = await
       this.authHttp.get(`${this.url}/planning/tmp?uuid=${_uuid}&query=${query}&genericType=${genericType}&limit=${limit}&offset=${offset}`)
-      .toPromise();
+        .toPromise();
     return rs.json();
   }
 
@@ -145,6 +145,11 @@ export class PlanningService {
     const rs: any = await this.authHttp.post(`${this.url}/planning/forecast`, {
       year: planningYear
     }).toPromise();
+    return rs.json();
+  }
+
+  async removePlanging(planningId: any) {
+    const rs: any = await this.authHttp.delete(`${this.url}/planning?planningId=${planningId}`).toPromise();
     return rs.json();
   }
 
