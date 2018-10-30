@@ -67,12 +67,14 @@
     <clr-dg-cell>{{p.confirmed | status}}</clr-dg-cell>
     <clr-dg-cell style="text-align: right;">{{p.planning_amount | number : '1.2-2'}}</clr-dg-cell>
     <clr-dg-cell style="text-align: center;">
-      <button class="btn btn-success btn-sm wm-small-btn" (click)="onEditPlanning(p)">
-        <clr-icon shape="note" size="16"></clr-icon>
-      </button>
-      <button class="btn btn-danger btn-sm wm-small-btn" (click)="onRemovePlanning(p)">
-        <clr-icon shape="trash" size="16"></clr-icon>
-      </button>
+      <div class="btn-group">
+        <button class="btn btn-success btn-sm wm-small-btn" (click)="onEditPlanning(p)">
+          <clr-icon shape="note"></clr-icon>
+        </button>
+        <button class="btn btn-danger btn-sm wm-small-btn" (click)="onRemovePlanning(p)">
+          <clr-icon shape="trash"></clr-icon>
+        </button>
+      </div>
     </clr-dg-cell>
   </clr-dg-row>
 
