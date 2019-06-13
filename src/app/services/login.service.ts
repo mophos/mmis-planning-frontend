@@ -5,14 +5,20 @@ import { Http } from '@angular/http';
 @Injectable()
 export class LoginService {
 
-  constructor(@Inject('LOGIN_URL') private url: string, private http: Http) { }
+  constructor(
+    @Inject('LOGIN_URL') private url: string, private http: Http) { }
 
-  async doLogin(username: any, password: any) {
+  async doLogin(username: any, password: any, userWarehouseId) {
     let rs: any = await this.http.post(`${this.url}/login`, {
       username: username,
-      password: password
+      password: password,
+      userWarehouseId: userWarehouseId
     }).toPromise();
+    return rs.json();
+  }
 
+  async searchWarehouse(username: string) {
+    let rs: any = await this.http.get(`${this.url}/login/warehouse/search?username=${username}`).toPromise();
     return rs.json();
   }
 }

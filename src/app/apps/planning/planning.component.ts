@@ -4,7 +4,7 @@ import { PlanningService } from './../../services/planning.service';
 import { AlertService } from '../../services/alert.service';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-
+import * as _ from 'lodash';
 @Component({
   selector: 'pm-planning',
   templateUrl: './planning.component.html',
@@ -68,4 +68,17 @@ export class PlanningComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
+  async onRemovePlanning(planning: any) {
+    try {
+      this.alertService.confirm('คุณต้องการลบรายการนี้ ใช่หรือไม่? [' + planning.planning_name + ']')
+        .then(async () => {
+          await this.planningService.removePlanging(planning.planning_hdr_id);
+          const idx = _.findIndex(this.plannings, { 'planning_hdr_id': planning.planning_hdr_id });
+          this.plannings.splice(idx, 1);
+        })
+        .catch(() => { });
+    } catch (error) {
+
+    }
+  }
 }

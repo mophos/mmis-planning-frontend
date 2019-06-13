@@ -18,6 +18,7 @@ import { BudgetService } from '../../services/budget.service';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import * as uuid from 'uuid/v4';
+import { StandardService } from '../../services/standard.service';
 
 @Component({
   selector: 'pm-planning-new',
@@ -40,6 +41,8 @@ export class PlanningNewComponent implements OnInit {
   years = [];
   plannings = [];
   budgetTypes = [];
+  genericTypes = [];
+  selectedGenericTypes = [];
 
   planningStatus = 'N';
   totalAmount = 0;
@@ -51,6 +54,7 @@ export class PlanningNewComponent implements OnInit {
   query: any;
   genericType: any;
   budgetTypeId: any;
+  opened = false;
 
   perPage = 10;
   offset = 0;
@@ -62,6 +66,7 @@ export class PlanningNewComponent implements OnInit {
     private planningService: PlanningService,
     private uploadingService: UploadingService,
     private budgetService: BudgetService,
+    private standardService: StandardService
   ) {
     this._uuid = uuid();
     console.log('_uuid', this._uuid);
@@ -81,6 +86,7 @@ export class PlanningNewComponent implements OnInit {
       if (rs.ok) {
         this.budgetTypes = rs.rows;
         this.budgetTypeId = this.budgetTypes ? this.budgetTypes[0].bgtype_id : null;
+        this.callForecast();
       } else {
         this.alertService.error(rs.error);
       }
@@ -88,6 +94,19 @@ export class PlanningNewComponent implements OnInit {
     } catch (error) {
       this.pmLoading.hide();
       this.alertService.serverError();
+    }
+  }
+
+  async getGenericType() {
+    try {
+      const rs: any = await this.standardService.getGenericTypes();
+      if (rs.ok) {
+        this.genericTypes = rs.rows;
+      } else {
+        this.alertService.error(rs.error);
+      }
+    } catch (error) {
+      this.alertService.error();
     }
   }
 
@@ -109,11 +128,27 @@ export class PlanningNewComponent implements OnInit {
       .then(() => {
         this.planningYear = event.target.value;
         this.oldPlanningYear = event.target.value;
-        this.clearPlanningTmp();
+        this.callForecast();
       })
       .catch(() => {
         this.planningYear = this.oldPlanningYear;
       });
+  }
+
+  async callForecast() {
+    try {
+      this.pmLoading.show();
+      const rs: any = await this.planningService.callForecast(this.planningYear);
+      if (rs.ok) {
+        this.clearPlanningTmp();
+      } else {
+        this.alertService.error(rs.error);
+      }
+      this.pmLoading.hide();
+    } catch (error) {
+      this.pmLoading.hide();
+      this.alertService.serverError();
+    }
   }
 
   async clearPlanningTmp() {
@@ -177,9 +212,14 @@ export class PlanningNewComponent implements OnInit {
   async processForecast() {
     try {
       this.pmLoading.show();
-      const rs: any = await this.planningService.processForecast(this.planningYear, this._uuid);
+      const genericTypeIds = [];
+      _.forEach(this.selectedGenericTypes, (t) => {
+        genericTypeIds.push(t.generic_type_id);
+      });
+      const rs: any = await this.planningService.processForecast(this.planningYear, this._uuid, genericTypeIds);
       if (rs.ok) {
         this.getPlanningTmp();
+        this.opened = false;
       } else {
         this.alertService.error(rs.error);
       }
@@ -327,7 +367,7 @@ export class PlanningNewComponent implements OnInit {
   async processCopyPlanning(obj) {
     try {
       this.pmLoading.show();
-      const rs: any = await this.planningService.processCopyPercent(obj.headerId, obj.percent, this._uuid);
+      const rs: any = await this.planningService.processCopyPercent(obj.headerId, obj.percent, this.planningYear, this._uuid);
       if (rs.ok) {
         this.alertService.success();
         this.copyModal.hide();
@@ -387,6 +427,16 @@ export class PlanningNewComponent implements OnInit {
   async onSelectGenericType(event) {
     this.genericType = event ? event.generic_type_id : '';
     this.getPlanningTmp();
+  }
+
+  onClickProcessForecast() {
+    this.alertService.confirm('รายการที่มีอยู่จะถูกลบ คุณต้องการทำรายการ ใช่หรือไม่?')
+      .then(() => {
+        this.getGenericType();
+        this.selectedGenericTypes = [];
+        this.opened = true;
+      })
+      .catch(() => { });
   }
 
 }
