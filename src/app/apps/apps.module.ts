@@ -1,3 +1,4 @@
+import { AccountPayableService } from './../services/account-payable.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -24,6 +25,9 @@ import { PlanningEditComponent } from './planning-edit/planning-edit.component';
 import { UploadingService } from '../services/uploading.service';
 import { BidTypeComponent } from './bid-type/bid-type.component';
 import { BidTypeService } from '../services/bid-type.service';
+import { AccountPayableComponent } from './account-payable/account-payable.component';
+import { AccountPayableNewComponent } from './account-payable-new/account-payable-new.component';
+import { AccountPayableNewGroupCostComponent } from './account-payable-new-group-cost/account-payable-new-group-cost.component';
 
 @NgModule({
   imports: [
@@ -46,7 +50,10 @@ import { BidTypeService } from '../services/bid-type.service';
     PlanningNewComponent,
     PlanningComponent,
     PlanningEditComponent,
-    BidTypeComponent
+    BidTypeComponent,
+    AccountPayableComponent,
+    AccountPayableNewComponent,
+    AccountPayableNewGroupCostComponent
   ],
   providers: [
     AlertService,
@@ -54,7 +61,8 @@ import { BidTypeService } from '../services/bid-type.service';
     PlanningService,
     UploadingService,
     BidTypeService,
-    AuthGuard
+    AuthGuard,
+    AccountPayableService
   ]
 })
 export class AppsModule { }

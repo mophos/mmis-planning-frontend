@@ -1,0 +1,61 @@
+<nav class="breadcrumb">
+  <a class="breadcrumb-item" href="javascript://" routerLink="/apps">หน้าหลัก</a>
+  <span class="breadcrumb-item active">ลูกหนี้/เจ้าหนี้</span>
+</nav>
+
+<!-- <div class="card">
+  <div class="card-block" style="padding: 0px 18px;">
+   
+  </div>
+</div> -->
+
+<div class="row">
+  <div class="col-md-2">
+    <!-- <button class="btn btn-success">สร้างใบเจ้าหนี้การค้า</button> -->
+    <clr-dropdown style="padding-top: 5px; padding-bottom: 5px;">
+      <button type="button" class="btn btn-sm btn-success" clrDropdownTrigger>
+        สร้างใบเจ้าหนี้การค้า
+        <clr-icon shape="caret down"></clr-icon>
+      </button>
+      <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+        <!-- <label class="dropdown-header">ประเภทการรับสินค้า</label> -->
+        <button routerLink="/apps/account-payable-new" type="button" clrDropdownItem>สร้างใบเจ้าหนี้การค้า</button>
+        <button type="button" routerLink="/apps/account-payable-new-group-cost"
+          clrDropdownItem>สร้างใบเจ้าหนี้การค้าแบบแบ่งกลุ่มจากมูลค่า</button>
+      </clr-dropdown-menu>
+    </clr-dropdown>
+  </div>
+  <div class="col-md-4" style="padding-top: 5px;">
+    <label for="query">ค้นหา</label>
+    <input type="text" placeholder="พิมพ์แล้วกด Enter" [(ngModel)]="query" (keyup)="enterSearch($event)"
+      style="width: 300px;">
+  </div>
+  <div class="col-md-6">
+    <!-- <div class="text-right" style="padding-top: 5px;">
+     
+    </div> -->
+  </div>
+</div>
+<clr-datagrid style="padding-top: 5px;">
+  <clr-dg-column>เลขที่ใบ</clr-dg-column>
+  <clr-dg-column>วันที่</clr-dg-column>
+  <clr-dg-column></clr-dg-column>
+  <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+  <clr-dg-row *ngFor="let i of list">
+    <pm-datagrid-payable *clrIfExpanded ngProjectAs="clr-dg-row-detail" [payableId]="i.payable_id">
+    </pm-datagrid-payable>
+    <clr-dg-cell>{{i.payable_code}}</clr-dg-cell>
+    <clr-dg-cell>{{i.payable_date | toThaiDate}}</clr-dg-cell>
+    <clr-dg-cell>
+      <button class="btn btn-success btn-sm" routerLink="/apps/account-payable-new"
+        [queryParams]="{payableId:i.payable_id}">
+        <clr-icon shape="note"></clr-icon>
+      </button>
+      <button class="btn btn-primary btn-sm" (click)="printReport(i.payable_id)">
+        <clr-icon shape="printer"></clr-icon>
+      </button>
+    </clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
+<pm-html-preview #htmlPreview></pm-html-preview>
+<pm-loading #pmLoading></pm-loading>
