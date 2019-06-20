@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import * as _ from 'lodash';
 import { IMyOptions } from 'mydatepicker-th';
 import { Router, ActivatedRoute } from '@angular/router';
-import moment = require('moment');
+import * as moment from 'moment';
 @Component({
   selector: 'pm-account-payable-new',
   templateUrl: './account-payable-new.component.html',
