@@ -10,8 +10,8 @@ export class AccountPayableService {
     private authHttp: AuthHttp
   ) { }
 
-  async getList() {
-    const rs: any = await this.authHttp.get(`${this.url}/account-payable`).toPromise();
+  async getList(query) {
+    const rs: any = await this.authHttp.get(`${this.url}/account-payable?query=${query}`).toPromise();
     return rs.json();
   }
 

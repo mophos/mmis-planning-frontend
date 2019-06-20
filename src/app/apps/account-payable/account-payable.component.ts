@@ -12,6 +12,7 @@ export class AccountPayableComponent implements OnInit {
 
   list = [];
   token: any;
+  query = '';
   @ViewChild('htmlPreview') private htmlPreview: any;
   @ViewChild('pmLoading') private pmLoading: LoadingComponent;
   constructor(
@@ -27,12 +28,14 @@ export class AccountPayableComponent implements OnInit {
   }
 
   enterSearch(e) {
-
+    if (e.keyCode === 13) {
+      this.getList();
+    }
   }
   async getList() {
     try {
       this.pmLoading.show();
-      const rs = await this.accountPayableService.getList();
+      const rs = await this.accountPayableService.getList(this.query);
       if (rs.ok) {
         this.list = rs.rows;
       } else {
