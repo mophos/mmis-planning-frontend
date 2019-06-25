@@ -77,7 +77,7 @@
           <clr-dg-column>เลขที่ใบส่งของ</clr-dg-column>
           <clr-dg-column></clr-dg-column>
           <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
-          <clr-dg-row *ngFor="let i of listSave">
+          <clr-dg-row *clrDgItems="let i of listSave">
             <clr-dg-cell *ngIf="i.purchase_order_book_number != null">{{i.purchase_order_book_number}}</clr-dg-cell>
             <clr-dg-cell *ngIf="i.purchase_order_book_number == null">{{i.purchase_order_number}}</clr-dg-cell>
             <clr-dg-cell>{{i.receive_code }}</clr-dg-cell>
