@@ -32,6 +32,7 @@ export class AccountPayableNewGroupCostComponent implements OnInit {
   no3Less = null;
   no4Greater = null;
   no4Less = null;
+  perpage = 10;
   constructor(
     private accountPayableService: AccountPayableService,
     private alertService: AlertService,

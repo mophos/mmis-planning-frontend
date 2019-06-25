@@ -17,6 +17,7 @@ export class AccountPayableNewComponent implements OnInit {
   query = '';
   date: any;
   isSave = false;
+  perpage = 10;
   myDatePickerOptions: IMyOptions = {
     inline: false,
     dateFormat: 'dd mmm yyyy',

@@ -41,7 +41,7 @@
               </button></clr-dg-cell>
           </clr-dg-row>
           <clr-dg-footer>
-            <clr-dg-pagination #pagination [clrDgTotalItems]="list.length" [clrDgPageSize]="10">
+            <clr-dg-pagination #pagination [clrDgTotalItems]="list.length" [clrDgPageSize]="perpage">
               {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
               of {{pagination.totalItems}} item
             </clr-dg-pagination>
