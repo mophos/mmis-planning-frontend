@@ -27,13 +27,18 @@ export class BudgetComponent implements OnInit {
   budgetSources = [];
   budgetYears = [];
   budgetList = [];
+  listWarehouse: any = [];
+  listBgDetailWarehouse: any = [];
+  selectedBgDetailWarehouse: any = []
 
   disableBudgetYear = false;
   openBudgetModal = false;
   openSubBudgetModal = false;
   openNewSubBudgetModal = false;
+  openSetSubBudgetWarehouseModal = false;
 
   selectedYear: any = moment().get('year') + (moment().get('month') > 8 ? 1 : 0);
+  selectedWarehouse: any
   bugdetDetailId: any;
   budgetYear: any;
   budgetTypeId: any;
@@ -75,6 +80,7 @@ export class BudgetComponent implements OnInit {
     this.getBudgetSubType();
     this.getBudgetSource();
     this.getBudgetByYear();
+    this.getWarehouse();
     const _min = new Date().getFullYear();
     this.years = Array.from(new Array(5), (x, i) => _min + i);
   }
@@ -425,5 +431,82 @@ export class BudgetComponent implements OnInit {
     const url = this.url + `/budget/export/${this.selectedYear}?token=${this.token}`;
     window.open(url, '_blank');
   }
+
+  async getWarehouse() {
+    try {
+      const rs = await this.budgetService.getWarehouse();
+      if (rs.ok) {
+        this.listWarehouse = rs.rows
+      }
+    } catch (error) {
+
+    }
+  }
+
+  async setSubBudgetWarehouse(b) {
+    this.selectedWarehouse = 0;
+    this.bugdetDetailId = b.bgdetail_id;
+    this.budgetTypeName = b.bgtype_name;
+    this.budgetSubTypeName = b.bgtypesub_name;
+
+    this.getBudgetWarehouse(this.bugdetDetailId);
+    this.openSetSubBudgetWarehouseModal = true;
+  }
+
+  async getBudgetWarehouse(b) {
+    try {
+      const rs = await this.budgetService.getBudgetWarehouse(b)
+      if (rs.ok) {
+        this.listBgDetailWarehouse = rs.rows
+      }
+    } catch (error) {
+
+    }
+  }
+
+  async saveSubBudgetWarehouse() {
+    let warehouse = this.selectedWarehouse
+    let bugdetDetailId = this.bugdetDetailId
+    if (warehouse != 0) {
+      try {
+        let data: any = {};
+        data.bgdetail_id = bugdetDetailId;
+        data.warehouse_id = warehouse
+        const rs: any = await this.budgetService.saveSubBudgetWarehouse(data);
+        if (rs.ok) {
+          this.alertService.success();
+          this.getBudgetWarehouse(bugdetDetailId);
+        } else {
+          this.alertService.error(rs.error);
+        }
+      } catch (error) {
+
+      }
+    } else {
+      this.alertService.error('กรุณาเลือกคลัง')
+    }
+  }
+
+  async deleteSubBudgetWarehouse() {
+    let subBudget: any = []
+    let bugdetDetailId = this.bugdetDetailId
+    this.selectedBgDetailWarehouse.forEach(e => {
+      subBudget.push(e.bgdetail_washouers_id)
+    });
+    try {
+      const rs: any = await this.budgetService.deleteSubBudgetWarehouse(subBudget);
+      if (rs.ok) {
+        this.alertService.success();
+        this.getBudgetWarehouse(bugdetDetailId);
+        this.selectedBgDetailWarehouse = []
+      } else {
+        this.alertService.error(rs.error);
+      }
+    } catch (error) {
+
+    }
+  }
+
+
 
 }
