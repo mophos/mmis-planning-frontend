@@ -1,0 +1,15 @@
+<div [clrLoading]="loading">
+  <clr-datagrid>
+    <clr-dg-column>เลขที่ใบรับ</clr-dg-column>
+    <clr-dg-column>วันที่รับ</clr-dg-column>
+    <clr-dg-column>เลขที่ใบส่งของ</clr-dg-column>
+    <clr-dg-column>มูลค่ารวม</clr-dg-column>
+    <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+    <clr-dg-row *ngFor="let i of list">
+      <clr-dg-cell>{{i.receive_code}}</clr-dg-cell>
+      <clr-dg-cell>{{i.receive_date | toThaiDate}}</clr-dg-cell>
+      <clr-dg-cell>{{i.delivery_code}}</clr-dg-cell>
+      <clr-dg-cell>{{i.total_price | number}}</clr-dg-cell>
+    </clr-dg-row>
+  </clr-datagrid>
+</div>

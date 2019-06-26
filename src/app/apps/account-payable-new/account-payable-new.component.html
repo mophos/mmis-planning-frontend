@@ -1,0 +1,79 @@
+<nav class="breadcrumb">
+  <a class="breadcrumb-item" href="javascript://" routerLink="/apps">หน้าหลัก</a>
+  <a class="breadcrumb-item" href="javascript://" routerLink="/apps/account-payable">ลูกหนี้/เจ้าหนี้</a>
+  <span class="breadcrumb-item active">สร้างใบลูกหนี้การค้า</span>
+</nav>
+
+<div class="card">
+  <div class="card-text" style="padding: 20px 20px">
+    <div class="row">
+      <div class="col-md-3">เลขที่ใบลูกหนี้การค้า</div>
+      <div class="col-md-3"><input type="text" disabled name="payableCode" [(ngModel)]="payableCode"></div>
+      <div class="col-md-3">วันที่ออกใบลูกหนี้การค้า</div>
+      <div class="col-md-3">
+        <my-date-picker-th id="date" name="date" [options]="myDatePickerOptions" [(ngModel)]="date" required>
+        </my-date-picker-th>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-text" style="padding: 20px 20px">
+    <input type="text" style="width:100%" class="form-control" name="query"
+      placeholder="ค้นหาจากเลขที่ใบรับ เลขที่ใบส่งของ เลขที่ใบสั่งซื้อ" [(ngModel)]="query"
+      (keyup)="enterSearch($event)">
+    <div class="row">
+      <div class="col-md-6">
+        <clr-datagrid style="padding-top: 5px;">
+          <clr-dg-column>เลขที่ใบสั่งซื้อ</clr-dg-column>
+          <clr-dg-column>เลขที่ใบรับสินค้า</clr-dg-column>
+          <clr-dg-column>เลขที่ใบส่งของ</clr-dg-column>
+          <clr-dg-column></clr-dg-column>
+          <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+          <clr-dg-row *clrDgItems="let i of list">
+            <clr-dg-cell *ngIf="i.purchase_order_book_number != null">{{i.purchase_order_book_number}}</clr-dg-cell>
+            <clr-dg-cell *ngIf="i.purchase_order_book_number == null">{{i.purchase_order_number}}</clr-dg-cell>
+            <clr-dg-cell>{{i.receive_code }}</clr-dg-cell>
+            <clr-dg-cell>{{i.delivery_code }}</clr-dg-cell>
+            <clr-dg-cell><button class="btn btn-success btn-sm" (click)="addItem(i)">
+                <clr-icon shape="plus"></clr-icon>
+              </button></clr-dg-cell>
+          </clr-dg-row>
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgTotalItems]="list.length" [clrDgPageSize]="perpage">
+              {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+              of {{pagination.totalItems}} item
+            </clr-dg-pagination>
+          </clr-dg-footer>
+        </clr-datagrid>
+      </div>
+      <div class="col-md-6">
+        <clr-datagrid style="padding-top: 5px;">
+          <clr-dg-column>เลขที่ใบสั่งซื้อ</clr-dg-column>
+          <clr-dg-column>เลขที่ใบรับสินค้า</clr-dg-column>
+          <clr-dg-column>เลขที่ใบส่งของ</clr-dg-column>
+          <clr-dg-column></clr-dg-column>
+          <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+          <clr-dg-row *ngFor="let i of listSave">
+            <clr-dg-cell *ngIf="i.purchase_order_book_number != null">{{i.purchase_order_book_number}}</clr-dg-cell>
+            <clr-dg-cell *ngIf="i.purchase_order_book_number == null">{{i.purchase_order_number}}</clr-dg-cell>
+            <clr-dg-cell>{{i.receive_code }}</clr-dg-cell>
+            <clr-dg-cell>{{i.delivery_code }}</clr-dg-cell>
+            <clr-dg-cell><button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+                <clr-icon shape="trash"></clr-icon>
+              </button></clr-dg-cell>
+          </clr-dg-row>
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination2 [clrDgTotalItems]="listSave.length" [clrDgPageSize]="10">
+              {{pagination2.firstItem + 1}} - {{pagination2.lastItem + 1}}
+              of {{pagination2.totalItems}} item
+            </clr-dg-pagination>
+          </clr-dg-footer>
+        </clr-datagrid>
+      </div>
+    </div>
+    <button class="btn btn-success" [disabled]="isSave" (click)="save()">บันทึก</button>
+  </div>
+
+  <pm-loading #pmLoading></pm-loading>

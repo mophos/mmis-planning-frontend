@@ -1,3 +1,6 @@
+import { AccountPayableNewGroupCostComponent } from './account-payable-new-group-cost/account-payable-new-group-cost.component';
+import { AccountPayableNewComponent } from './account-payable-new/account-payable-new.component';
+import { AccountPayableComponent } from './account-payable/account-payable.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LayoutComponent } from './layout.component';
@@ -21,10 +24,13 @@ const routes: Routes = [
       { path: 'budget-source', component: BudgetSourceComponent },
       { path: 'budget-type', component: BudgetTypeComponent },
       { path: 'budget-subtype', component: BudgetSubTypeComponent },
-      { path: 'planning', component: PlanningComponent},
+      { path: 'planning', component: PlanningComponent },
       { path: 'planning-new', component: PlanningNewComponent },
       { path: 'planning-edit/:headerId', component: PlanningEditComponent },
       { path: 'bid-type', component: BidTypeComponent },
+      { path: 'account-payable', component: AccountPayableComponent },
+      { path: 'account-payable-new', component: AccountPayableNewComponent },
+      { path: 'account-payable-new-group-cost', component: AccountPayableNewGroupCostComponent },
     ]
   }
 ];

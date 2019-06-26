@@ -66,7 +66,6 @@ export class PlanningEditComponent implements OnInit {
   ) {
     this.planningHeaderId = this.route.snapshot.params.headerId;
     this._uuid = uuid();
-    console.log('_uuid', this._uuid);
     this._token = sessionStorage.getItem('token');
   }
 
