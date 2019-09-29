@@ -48,7 +48,8 @@
         <clr-dg-column [style.width.px]="200">หมายเหตุ</clr-dg-column>
         <clr-dg-column [style.width.px]="80">#</clr-dg-column>
         <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
-        <clr-dg-row *clrDgItems="let b of budgetDetails" [clrDgItem]="b" [ngClass]="{'budget-approved': b.status==='APPROVE'}">
+        <clr-dg-row *clrDgItems="let b of budgetDetails" [clrDgItem]="b"
+          [ngClass]="{'budget-approved': b.status==='APPROVE'}">
           <clr-dg-cell style="text-align: center;">{{b.bg_year | toThaiDate: 'Y'}}</clr-dg-cell>
           <clr-dg-cell>{{b.bgtype_name}}</clr-dg-cell>
           <clr-dg-cell>{{b.bgtypesub_name}}</clr-dg-cell>
@@ -57,8 +58,8 @@
           <clr-dg-cell style="text-align: right;">{{b.amount | number : '1.2-2'}}</clr-dg-cell>
           <clr-dg-cell>{{b.remark}}</clr-dg-cell>
           <clr-dg-cell style="text-align: center;">
-            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editBudgetDetail(b)"
-              [disabled]="b.status==='APPROVE'">
+            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn"
+              (click)="editBudgetDetail(b)" [disabled]="b.status==='APPROVE'">
               <clr-icon shape="note"></clr-icon>
             </button>
           </clr-dg-cell>
@@ -134,7 +135,8 @@
           <clr-dg-cell style="text-align: right;">{{(100 / b.amount * (b.amount - b.order_amt)) / 100 |
             percent:'1.2-2'}}</clr-dg-cell>
           <clr-dg-cell style="text-align: center;">
-            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn" (click)="editTotalSubBudget(b)">
+            <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn"
+              (click)="editTotalSubBudget(b)">
               <clr-icon shape="note"></clr-icon>
             </button>
           </clr-dg-cell>
@@ -155,7 +157,7 @@
           <div class="select">
             <select [(ngModel)]="selectedBudgetDetailId" name="bgDetailId" (change)="getBudgetTransaction()">
               <option value="">งบประมาณทั้งหมด</option>
-              <option [value]="b.bgdetail_id" *ngFor="let b of budgetList">{{b.budget_desc}}</option>
+              <option [value]="b.view_bgdetail_id" *ngFor="let b of budgetList">{{b.budget_desc}}</option>
             </select>
           </div>
         </div>
@@ -291,7 +293,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" (click)="saveBudgetDetail()" [disabled]="!budgetYear || !budgetTypeId || !operationDate || !budgetSourceId || !budgetAmount || budgetStatus==='APPROVE'">
+    <button class="btn btn-primary" (click)="saveBudgetDetail()"
+      [disabled]="!budgetYear || !budgetTypeId || !operationDate || !budgetSourceId || !budgetAmount || budgetStatus==='APPROVE'">
       บันทึก
     </button>
     <button class="btn btn-danger-outline" (click)="openBudgetModal = false">
@@ -337,8 +340,8 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="ordAmount">จำนวนเงินที่ใช้ไป</label>
-            <input class="form-control" type="text" name="ordAmount" value="{{orderAmount - spendAmount | number : '1.2-2'}}"
-              disabled>
+            <input class="form-control" type="text" name="ordAmount"
+              value="{{orderAmount - spendAmount | number : '1.2-2'}}" disabled>
           </div>
         </div>
       </div>
@@ -346,14 +349,15 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotal">จำนวนเงินคงเหลือ</label>
-            <input class="form-control" type="text" name="bgTotal" value="{{totalAmount - (orderAmount - spendAmount) | number : '1.2-2'}}"
-              disabled>
+            <input class="form-control" type="text" name="bgTotal"
+              value="{{totalAmount - (orderAmount - spendAmount) | number : '1.2-2'}}" disabled>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotalPercent">คงเหลือ (%)</label>
-            <input class="form-control" type="text" name="bgTotalPercent" value="{{(100 / totalAmount * (totalAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
+            <input class="form-control" type="text" name="bgTotalPercent"
+              value="{{(100 / totalAmount * (totalAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
               disabled>
           </div>
         </div>
@@ -369,7 +373,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" (click)="saveTotalSubBudget()" [disabled]="!bugdetDetailId || !spendAmount || spendAmount === '.' || !budgetRemark">
+    <button class="btn btn-primary" (click)="saveTotalSubBudget()"
+      [disabled]="!bugdetDetailId || !spendAmount || spendAmount === '.' || !budgetRemark">
       บันทึก
     </button>
     <button class="btn btn-danger-outline" (click)="openSubBudgetModal = false">
@@ -400,7 +405,8 @@
           <div class="form-group" style="padding-left: 150px;">
             <label class="required" for="bgDetailId">งบประมาณ</label>
             <div class="select form-control">
-              <select id="bgDetailId" [(ngModel)]="selectedBudgetDetailId" name="bgDetailId" (change)="onChangeBudgetDetail()">
+              <select id="bgDetailId" [(ngModel)]="selectedBudgetDetailId" name="bgDetailId"
+                (change)="onChangeBudgetDetail()">
                 <option value="">
                   <กรุณาเลือกงบประมาณ>
                 </option>
@@ -428,14 +434,15 @@
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotal">จำนวนเงินคงเหลือ</label>
-            <input class="form-control" type="text" name="bgTotal" value="{{totalAmount - (orderAmount - spendAmount) | number : '1.2-2'}}"
-              disabled>
+            <input class="form-control" type="text" name="bgTotal"
+              value="{{totalAmount - (orderAmount - spendAmount) | number : '1.2-2'}}" disabled>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group" style="padding-left: 150px;">
             <label for="bgTotalPercent">คงเหลือ (%)</label>
-            <input class="form-control" type="text" name="bgTotalPercent" value="{{(100 / totalAmount * (totalAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
+            <input class="form-control" type="text" name="bgTotalPercent"
+              value="{{(100 / totalAmount * (totalAmount - (orderAmount - spendAmount))) / 100 | percent:'1.2-2'}}"
               disabled>
           </div>
         </div>
@@ -451,7 +458,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" (click)="saveTotalSubBudget()" [disabled]="!bugdetDetailId || !spendAmount || spendAmount === '.' || !budgetRemark">
+    <button class="btn btn-primary" (click)="saveTotalSubBudget()"
+      [disabled]="!bugdetDetailId || !spendAmount || spendAmount === '.' || !budgetRemark">
       บันทึก
     </button>
     <button class="btn btn-danger-outline" (click)="openNewSubBudgetModal = false">
