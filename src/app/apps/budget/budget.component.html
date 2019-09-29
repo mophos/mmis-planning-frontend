@@ -164,7 +164,7 @@
           <div class="select">
             <select [(ngModel)]="selectedBudgetDetailId" name="bgDetailId" (change)="getBudgetTransaction()">
               <option value="">งบประมาณทั้งหมด</option>
-              <option [value]="b.bgdetail_id" *ngFor="let b of budgetList">{{b.budget_desc}}</option>
+              <option [value]="b.view_bgdetail_id" *ngFor="let b of budgetList">{{b.budget_desc}}</option>
             </select>
           </div>
         </div>
