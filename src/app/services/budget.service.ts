@@ -140,4 +140,26 @@ export class BudgetService {
     return rs.json();
   }
 
+  async getWarehouse() {
+    const rs: any = await this.authHttp.get(`${this.url}/budget/get-warehouse`).toPromise();
+    return rs.json();
+  }
+
+  async getBudgetWarehouse(bgdetail_id: any) {
+    const rs: any = await this.authHttp.get(`${this.url}/budget/get-budget-warehouse/${bgdetail_id}`).toPromise();
+    return rs.json();
+  }
+
+  async saveSubBudgetWarehouse(data: any) {
+    const rs: any = await this.authHttp.post(`${this.url}/budget/save-subbudget-warehouse`, {
+      data: data
+    }).toPromise();
+    return rs.json();
+  }
+
+  async deleteSubBudgetWarehouse(subBudget: any) {
+    const rs: any = await this.authHttp.delete(`${this.url}/budget/delete-subbudget-warehouse?subBudget=${subBudget}`).toPromise();
+    return rs.json();
+  }
+
 }

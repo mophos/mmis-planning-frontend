@@ -124,6 +124,7 @@
         <clr-dg-column [style.width.px]="150">จำนวนเงินคงเหลือ</clr-dg-column>
         <clr-dg-column [style.width.px]="100">คงเหลือ (%)</clr-dg-column>
         <clr-dg-column [style.width.px]="100">คืนเงินที่ใช้ไป</clr-dg-column>
+        <clr-dg-column [style.width.px]="100">คลังจัดซื้อ</clr-dg-column>
         <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
         <clr-dg-row *clrDgItems="let b of totalSubBudgets" [clrDgItem]="b">
           <clr-dg-cell style="text-align: center;">{{b.bg_year | toThaiDate: 'Y'}}</clr-dg-cell>
@@ -138,6 +139,12 @@
             <button title="ดูข้อมูล/แก้ไข" class="btn btn-success btn-icon btn-sm bm-small-btn"
               (click)="editTotalSubBudget(b)">
               <clr-icon shape="note"></clr-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell style="text-align: center;">
+            <button title="ตั้งค่าคลังที่ใช้งบ" class="btn btn-primary btn-icon btn-sm bm-small-btn"
+              (click)="setSubBudgetWarehouse(b)">
+              <clr-icon shape="file-settings"></clr-icon>
             </button>
           </clr-dg-cell>
         </clr-dg-row>
@@ -463,6 +470,51 @@
       บันทึก
     </button>
     <button class="btn btn-danger-outline" (click)="openNewSubBudgetModal = false">
+      ปิด
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="openSetSubBudgetWarehouseModal" [clrModalClosable]="false" [clrModalSize]="'lg'">
+  <h3 class="modal-title">ตั้งค่าคลังที่ใช้งบ : {{budgetTypeName}} - {{budgetSubTypeName}}</h3>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-2">
+        <span>เลือกคลัง : </span>
+      </div>
+      <div class="col-md-6">
+        <div class="select form-control">
+          <select id="warehouse" [(ngModel)]="selectedWarehouse">
+            <option value="0">
+              กรุณาเลือกคลัง
+            </option>
+            <option *ngFor="let y of listWarehouse" [value]="y.warehouse_id">{{y.short_code}} - {{y.warehouse_name}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-primary btn-sm" (click)="saveSubBudgetWarehouse()">เพิ่ม</button>
+        <button class="btn btn-warning btn-sm" (click)="deleteSubBudgetWarehouse()">ลบ</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <clr-datagrid style="height:250px;" [(clrDgSelected)]="selectedBgDetailWarehouse">
+          <clr-dg-column>รหัสคลังสินค้า</clr-dg-column>
+          <clr-dg-column>ชื่อคลังสินค้า</clr-dg-column>
+          <clr-dg-placeholder>ไม่พบรายการ!</clr-dg-placeholder>
+          <clr-dg-row *ngFor="let list of listBgDetailWarehouse" [clrDgItem]="list">
+            <clr-dg-cell>{{list.short_code}}</clr-dg-cell>
+            <clr-dg-cell>{{list.warehouse_name}}</clr-dg-cell>
+          </clr-dg-row>
+          <!-- <clr-dg-footer>{{list.length}} รายการ</clr-dg-footer> -->
+        </clr-datagrid>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger-outline" (click)="openSetSubBudgetWarehouseModal = false">
       ปิด
     </button>
   </div>
