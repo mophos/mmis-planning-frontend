@@ -18,7 +18,7 @@ export class SelectBidtypeComponent implements OnInit {
 
 
   loading = false;
-  items: BidType[] = [];
+  items: any = [];
 
   constructor(private standardService: StandardService, private alertService: AlertService) { }
 
