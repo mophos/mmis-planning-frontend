@@ -444,6 +444,8 @@ export class BudgetComponent implements OnInit {
   }
 
   async setSubBudgetWarehouse(b) {
+    console.log(b);
+    
     this.selectedWarehouse = 0;
     this.bugdetDetailId = b.bgdetail_id;
     this.budgetTypeName = b.bgtype_name;
@@ -470,7 +472,7 @@ export class BudgetComponent implements OnInit {
     if (warehouse != 0) {
       try {
         let data: any = {};
-        data.bgdetail_id = bugdetDetailId;
+        data.view_bgdetail_id = bugdetDetailId;
         data.warehouse_id = warehouse
         const rs: any = await this.budgetService.saveSubBudgetWarehouse(data);
         if (rs.ok) {
