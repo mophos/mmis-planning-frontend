@@ -221,20 +221,22 @@ export class DatagridPlanningComponent implements OnInit {
     try {
       const rs: any = await this.planningService.getForecast(this.selectedGenericId, this.planningYear, this.selectedTmpId);
       if (rs.ok) {
-        const data = rs.rows[0];
-        this.selectedRate3Year = Math.round(data.sumy3 / this.selectedConversionQty);
-        this.selectedRate2Year = Math.round(data.sumy2 / this.selectedConversionQty);
-        this.selectedRate1Year = Math.round(data.sumy1 / this.selectedConversionQty);
-        this.selectedEstimateQty = Math.round(data.sumy4 / this.selectedConversionQty);
-        this.selectedStockQty = Math.round(data.stock_qty / this.selectedConversionQty);
-        this.selectedStockDate = moment(data.process_date).format('YYYY-MM-DD HH:mm:ss');
-        this.selectedEstimateBuyQty = Math.round(data.buy_qty / this.selectedConversionQty);
-        this.selectedQ1 = Math.round(data.y4q1 / this.selectedConversionQty);
-        this.selectedQ2 = Math.round(data.y4q2 / this.selectedConversionQty);
-        this.selectedQ3 = Math.round(data.y4q4 / this.selectedConversionQty);
-        this.selectedQ4 = Math.round(data.y4q4 / this.selectedConversionQty);
-        this.selectedQty = this.selectedQ1 + this.selectedQ2 + this.selectedQ3 + this.selectedQ4;
-        this.selectedAmount = this.selectedQty * this.selectedCost;
+        if (rs.rows.length) {
+          const data = rs.rows[0];
+          this.selectedRate3Year = Math.round(data.sumy3 / this.selectedConversionQty);
+          this.selectedRate2Year = Math.round(data.sumy2 / this.selectedConversionQty);
+          this.selectedRate1Year = Math.round(data.sumy1 / this.selectedConversionQty);
+          this.selectedEstimateQty = Math.round(data.sumy4 / this.selectedConversionQty);
+          this.selectedStockQty = Math.round(data.stock_qty / this.selectedConversionQty);
+          this.selectedStockDate = moment(data.process_date).format('YYYY-MM-DD HH:mm:ss');
+          this.selectedEstimateBuyQty = Math.round(data.buy_qty / this.selectedConversionQty);
+          this.selectedQ1 = Math.round(data.y4q1 / this.selectedConversionQty);
+          this.selectedQ2 = Math.round(data.y4q2 / this.selectedConversionQty);
+          this.selectedQ3 = Math.round(data.y4q4 / this.selectedConversionQty);
+          this.selectedQ4 = Math.round(data.y4q4 / this.selectedConversionQty);
+          this.selectedQty = this.selectedQ1 + this.selectedQ2 + this.selectedQ3 + this.selectedQ4;
+          this.selectedAmount = this.selectedQty * this.selectedCost;
+        }
       } else {
         this.alertService.error(rs.error);
       }
