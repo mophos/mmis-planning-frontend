@@ -236,6 +236,14 @@ export class DatagridPlanningComponent implements OnInit {
           this.selectedQ4 = Math.round(data.y4q4 / this.selectedConversionQty);
           this.selectedQty = this.selectedQ1 + this.selectedQ2 + this.selectedQ3 + this.selectedQ4;
           this.selectedAmount = this.selectedQty * this.selectedCost;
+        } else {
+          this.selectedRate3Year = 0;
+          this.selectedRate2Year = 0;
+          this.selectedRate1Year = 0;
+          this.selectedEstimateQty = 0;
+          this.selectedStockQty = 0;
+          // this.selectedStockDate = moment(data.process_date).format('YYYY-MM-DD HH:mm:ss');
+          this.selectedEstimateBuyQty = 0;
         }
       } else {
         this.alertService.error(rs.error);
