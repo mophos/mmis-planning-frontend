@@ -7,6 +7,7 @@
   + เพิ่มรายการ</button>
 <clr-datagrid style="height: 85%;">
   <clr-dg-column [clrDgField]="'name_name'">รูปแบบการจัดซื้อ</clr-dg-column>
+  <clr-dg-column>รูปแบบการจัดซื้อ (อ้างอิงตาม DMSIC)</clr-dg-column>
   <clr-dg-column [style.width.px]="150">สถานะการใช้งาน</clr-dg-column>
   <clr-dg-column [style.width.px]="150">ค่าเริ่มต้น</clr-dg-column>
 
@@ -16,6 +17,7 @@
       <button class="action-item" (click)="onClickDelete(row)">ลบ</button>
     </clr-dg-action-overflow>
     <clr-dg-cell>{{row.bid_name}}</clr-dg-cell>
+    <clr-dg-cell>{{row.co_purchase_name}}</clr-dg-cell>
     <clr-dg-cell style="text-align: center;">
       <div class="toggle-switch">
         <input type="checkbox" id="toggle_{{row.bid_id}}" #active name="isActive" [checked]="row.isactive===1" (change)="setIsActive(row.bid_id, $event)">
@@ -45,6 +47,19 @@
           </div>
           <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
             <input type="text" name="bidName" [(ngModel)]="bidName" placeholder="" size="50">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            <label for="coPurchaseId">รูปแบบการจัดซื้อ (อ้างอิงตาม DMSIC)</label>
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <div class="select">
+              <select name="coPurchaseId" [(ngModel)]="coPurchaseId" id="coPurchaseId">
+                <option [ngValue]="null">-- ไม่ระบุ --</option>
+                <option *ngFor="let item of coPurchaseItems" [ngValue]="item.co_purchase_id">{{item.co_purchase_name}}</option>
+              </select>
+            </div>
           </div>
         </div>
       </section>

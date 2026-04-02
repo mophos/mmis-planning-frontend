@@ -28,6 +28,12 @@ export class StandardService {
     return rs.json();
   }
 
+  async getCoPurchase() {
+    let rs: any = await this.authHttp.get(`${this.url}/standard/copurchase`)
+      .toPromise();
+    return rs.json();
+  }
+
   async getStatus() {
     let rs: any = await this.authHttp.get(`${this.url}/standard/status`)
       .toPromise();
