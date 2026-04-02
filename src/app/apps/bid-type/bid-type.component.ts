@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertService } from '../../services/alert.service';
 import { BidTypeService } from '../../services/bid-type.service';
+import { StandardService } from '../../services/standard.service';
 import { LoadingComponent } from '../../modals/loading/loading.component';
 
 @Component({
@@ -16,14 +17,18 @@ export class BidTypeComponent implements OnInit {
   bidId: any;
   bidName: any;
   isActive = 1;
+  coPurchaseId: any;
+  coPurchaseItems: any[] = [];
 
   constructor(
     private alertService: AlertService,
-    private bidTypeService: BidTypeService
+    private bidTypeService: BidTypeService,
+    private standardService: StandardService
   ) { }
 
   ngOnInit() {
     this.getBidType();
+    this.getCoPurchase();
   }
 
   onClickAdd() {
@@ -31,12 +36,14 @@ export class BidTypeComponent implements OnInit {
     this.bidId = null;
     this.isActive = 1;
     this.bidName = '';
+    this.coPurchaseId = null;
   }
 
   onClickEdit(row) {
     this.bidId = row.bid_id;
     this.bidName = row.bid_name;
     this.isActive = row.isactive;
+    this.coPurchaseId = row.co_purchase_id;
     this.modalInput = true;
   }
 
@@ -63,7 +70,8 @@ export class BidTypeComponent implements OnInit {
 
   async onClickSave() {
     const data = {
-      bid_name: this.bidName
+      bid_name: this.bidName,
+      co_purchase_id: this.coPurchaseId || null
     };
     try {
       this.pmLoading.show();
@@ -83,6 +91,19 @@ export class BidTypeComponent implements OnInit {
       this.pmLoading.hide();
     } catch (error) {
       this.pmLoading.hide();
+      this.alertService.serverError();
+    }
+  }
+
+  async getCoPurchase() {
+    try {
+      const rs: any = await this.standardService.getCoPurchase();
+      if (rs.ok) {
+        this.coPurchaseItems = rs.rows;
+      } else {
+        this.alertService.error(rs.error);
+      }
+    } catch (error) {
       this.alertService.serverError();
     }
   }
