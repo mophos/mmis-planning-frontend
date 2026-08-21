@@ -54,11 +54,17 @@ export class PlanningNewComponent implements OnInit {
   query: any;
   genericType: any;
   budgetTypeId: any;
+  /** กันกดปุ่มบันทึกรัวๆ จนได้แผนซ้ำหลายฉบับ */
+  isSaving = false;
+
   opened = false;
 
   perPage = 10;
   offset = 0;
+  /** จำนวนรายการที่ผ่านตัวกรอง ใช้กับการแบ่งหน้าเท่านั้น */
   planningTotal = 0;
+  /** จำนวนรายการของทั้งร่างแผน ใช้แสดงสรุปและใช้ตอนบันทึก */
+  planningTotalAll = 0;
 
   constructor(
     private router: Router,
@@ -170,7 +176,7 @@ export class PlanningNewComponent implements OnInit {
   async deletePlanningTmp(item: any) {
     try {
       this.pmLoading.show();
-      const rs: any = await this.planningService.deletePlanningTmp(item.tmp_id);
+      const rs: any = await this.planningService.deletePlanningTmp(item.tmp_id, this._uuid);
       if (rs.ok) {
         this.getPlanningTmp();
       } else {
@@ -184,6 +190,8 @@ export class PlanningNewComponent implements OnInit {
   }
 
   async savePlanning() {
+    if (this.isSaving) { return; }
+    this.isSaving = true;
     try {
       this.pmLoading.show();
       const _header = {
@@ -191,7 +199,7 @@ export class PlanningNewComponent implements OnInit {
         totalAmount: this.totalAmount,
         planningName: this.planningName,
         planningMemo: this.planningMemo,
-        planningQty: this.planningTotal,
+        planningQty: this.planningTotalAll,
         refHeaderId: this.refHeaderId,
         budgetTypeId: this.budgetTypeId
       };
@@ -203,9 +211,11 @@ export class PlanningNewComponent implements OnInit {
         this.alertService.error(rs.error);
       }
       this.pmLoading.hide();
+      this.isSaving = false;
     } catch (error) {
       this.alertService.serverError();
       this.pmLoading.hide();
+      this.isSaving = false;
     }
   }
 
@@ -236,8 +246,12 @@ export class PlanningNewComponent implements OnInit {
       const rs: any = await this.planningService.getPlanningTmp(this._uuid, this.query, this.genericType, this.perPage, this.offset);
       if (rs.ok) {
         this.plannings = rs.rows;
+        // total/amount ผ่านตัวกรองของตาราง ใช้กับการแบ่งหน้าเท่านั้น
         this.planningTotal = rs.total;
-        this.totalAmount = rs.amount || 0;
+        // totalAll/amountAll คือยอดของทั้งร่างแผน ใช้แสดงสรุปและใช้ตอนบันทึก
+        // ถ้าใช้ค่าที่ผ่านตัวกรอง หัวแผนจะเก็บยอดของเฉพาะหมวดที่กรองไว้
+        this.planningTotalAll = rs.totalAll;
+        this.totalAmount = rs.amountAll || 0;
       } else {
         this.alertService.error(rs.error);
       }
@@ -387,11 +401,17 @@ export class PlanningNewComponent implements OnInit {
       this.pmLoading.show();
       const rs: any = await this.uploadingService.uploadPlanning(this._uuid, obj.file);
       if (rs.ok) {
-        this.alertService.success();
         this.uploadModal.hide();
         this.getPlanningTmp();
+        // แจ้งเป็นรายแถวว่ามีอะไรตกหล่นบ้าง ไม่ใช่บอกแค่ "สำเร็จ"
+        this.alertService.importResult(rs.imported, rs.skipped);
       } else {
-        this.alertService.error(rs.error);
+        // นำเข้าไม่ได้เลย แต่ถ้ามีรายละเอียดว่าแถวไหนมีปัญหาก็ให้เห็นด้วย
+        if (rs.skipped && rs.skipped.length) {
+          this.alertService.importResult(0, rs.skipped);
+        } else {
+          this.alertService.error(rs.error);
+        }
       }
       this.pmLoading.hide();
     } catch (error) {

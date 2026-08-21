@@ -70,7 +70,7 @@
               <label for="countItem">จำนวนรายการ</label>
             </div>
             <div class="col-md-8">
-              <input type="text" class="text-success" id="countItem" readonly value="{{ planningTotal | number }}">
+              <input type="text" class="text-success" id="countItem" readonly value="{{ planningTotalAll | number }}">
             </div>
           </div>
         </div>
@@ -119,7 +119,7 @@
   (update)="updatePlanningTmp($event)" (delete)="deletePlanningTmp($event)" (refresh)="refreshPlanning($event)"></pm-datagrid-planning>
 
 <div>
-  <button type="button" (click)="savePlanning()" class="btn btn-sm btn-success" [disabled]="!planningYear || !planningName || !plannings.length">
+  <button type="button" (click)="savePlanning()" class="btn btn-sm btn-success" [disabled]="isSaving || !planningYear || !planningName || !plannings.length">
     <clr-icon shape="floppy"></clr-icon> บันทึกแผนฯ
   </button>
   <button type="button" class="btn btn-sm btn-danger" [routerLink]="['/apps/planning']">

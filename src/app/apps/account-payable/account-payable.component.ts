@@ -49,8 +49,8 @@ export class AccountPayableComponent implements OnInit {
   }
 
   printReport(payableId) {
+    // ไม่ log URL เพราะมี token ติดอยู่ใน query string
     const url = `${this.url}/account-payable/report?payableId=${payableId}&token=${this.token}`;
-    console.log(url);
 
     this.htmlPreview.showReport(url);
   }

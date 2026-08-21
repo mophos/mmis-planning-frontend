@@ -68,10 +68,14 @@
     <clr-dg-cell style="text-align: right;">{{p.planning_amount | number : '1.2-2'}}</clr-dg-cell>
     <clr-dg-cell style="text-align: center;">
       <div class="btn-group">
-        <button class="btn btn-success btn-sm wm-small-btn" (click)="onEditPlanning(p)">
+        <button class="btn btn-primary btn-sm wm-small-btn" title="ยืนยันแผน"
+          [disabled]="p.confirmed === 'Y'" (click)="onConfirmPlanning(p)">
+          <clr-icon shape="check"></clr-icon>
+        </button>
+        <button class="btn btn-success btn-sm wm-small-btn" title="แก้ไขแผน" (click)="onEditPlanning(p)">
           <clr-icon shape="note"></clr-icon>
         </button>
-        <button class="btn btn-danger btn-sm wm-small-btn" (click)="onRemovePlanning(p)">
+        <button class="btn btn-danger btn-sm wm-small-btn" title="ลบแผน" (click)="onRemovePlanning(p)">
           <clr-icon shape="trash"></clr-icon>
         </button>
       </div>

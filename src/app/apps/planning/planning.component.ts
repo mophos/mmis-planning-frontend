@@ -68,6 +68,35 @@ export class PlanningComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
+  /**
+   * ยืนยันแผนจากหน้ารายการ
+   *
+   * ใช้ endpoint แยกที่เปลี่ยนแค่สถานะ ไม่ใช่เส้นทางบันทึกแผน
+   * เพราะเส้นทางนั้นเขียนรายละเอียดใหม่จากตารางชั่วคราวซึ่งตอนนี้ว่างอยู่
+   * และไม่ได้สร้างฉบับแก้ไขใหม่ด้วย เพราะแผนยังไม่เคยถูกยืนยัน
+   */
+  onConfirmPlanning(planning: any) {
+    this.alertService.confirm(`ยืนยันแผน [${planning.planning_name}] ใช่หรือไม่?`)
+      .then(async () => {
+        try {
+          this.pmLoading.show();
+          const rs: any = await this.planningService.confirmPlanning(planning.planning_hdr_id);
+          if (rs.ok) {
+            // แก้ค่าในแถวเลย ไม่ต้องโหลดใหม่ทั้งหน้า ตัวกรองที่ผู้ใช้ตั้งไว้จะได้ไม่หาย
+            planning.confirmed = 'Y';
+            this.alertService.success();
+          } else {
+            this.alertService.error(rs.error);
+          }
+          this.pmLoading.hide();
+        } catch (error) {
+          this.alertService.serverError();
+          this.pmLoading.hide();
+        }
+      })
+      .catch(() => { });
+  }
+
   async onRemovePlanning(planning: any) {
     try {
       this.alertService.confirm('คุณต้องการลบรายการนี้ ใช่หรือไม่? [' + planning.planning_name + ']')

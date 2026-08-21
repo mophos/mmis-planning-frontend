@@ -50,10 +50,16 @@ export class PlanningEditComponent implements OnInit {
   query: any;
   genericType: any;
   budgetTypeId: any;
+  /** กันกดปุ่มบันทึกรัวๆ จนได้แผนซ้ำหลายฉบับ */
+  isSaving = false;
+
 
   perPage = 5;
   offset = 0;
+  /** จำนวนรายการที่ผ่านตัวกรอง ใช้กับการแบ่งหน้าเท่านั้น */
   planningTotal = 0;
+  /** จำนวนรายการของทั้งร่างแผน ใช้แสดงสรุปและใช้ตอนบันทึก */
+  planningTotalAll = 0;
 
   constructor(
     @Inject('API_URL') private url: string,
@@ -84,7 +90,11 @@ export class PlanningEditComponent implements OnInit {
       const rs: any = await this.budgetService.getBudgetType();
       if (rs.ok) {
         this.budgetTypes = rs.rows;
-        this.budgetTypeId = this.budgetTypes ? this.budgetTypes[0].bgtype_id : null;
+        // ตั้งค่าเริ่มต้นเฉพาะตอนที่ยังไม่มีค่า เพราะฟังก์ชันนี้ทำงานขนานกับ
+        // getPlanningHeaderInfo() ถ้าเขียนทับจะกลายเป็นประเภทงบของแผนอื่น
+        if (!this.budgetTypeId) {
+          this.budgetTypeId = this.budgetTypes ? this.budgetTypes[0].bgtype_id : null;
+        }
       } else {
         this.alertService.error(rs.error);
       }
@@ -106,7 +116,12 @@ export class PlanningEditComponent implements OnInit {
         this.planningStatus = data.confirmed;
         this.totalAmount = data.planning_amount;
         this.planningTotal = data.planning_qty;
+        this.planningTotalAll = data.planning_qty;
         this.refHeaderId = data.ref_hdr_id;
+        // เดิมไม่ได้โหลด 2 ค่านี้มา ทำให้ตอนบันทึกแผนที่ยืนยันแล้ว (ซึ่งสร้างฉบับใหม่)
+        // ประเภทงบหายไปจนบันทึกไม่ได้ และหมายเหตุก็หายไปเงียบๆ
+        this.budgetTypeId = data.bgtype_id;
+        this.planningMemo = data.planning_memo;
       } else {
         this.alertService.error(rs.error);
       }
@@ -136,7 +151,7 @@ export class PlanningEditComponent implements OnInit {
   async deletePlanningTmp(item: any) {
     try {
       this.pmLoading.show();
-      const rs: any = await this.planningService.deletePlanningTmp(item.tmp_id);
+      const rs: any = await this.planningService.deletePlanningTmp(item.tmp_id, this._uuid);
       if (rs.ok) {
         this.getPlanningTmp();
       } else {
@@ -150,6 +165,8 @@ export class PlanningEditComponent implements OnInit {
   }
 
   async savePlanning() {
+    if (this.isSaving) { return; }
+    this.isSaving = true;
     try {
       this.pmLoading.show();
       const _header = {
@@ -159,20 +176,32 @@ export class PlanningEditComponent implements OnInit {
         planningName: this.planningName,
         planningMemo: this.planningMemo,
         confirmed: this.planningStatus,
-        planningQty: this.planningTotal,
-        refHeaderId: this.refHeaderId
+        planningQty: this.planningTotalAll,
+        refHeaderId: this.refHeaderId,
+        // ต้องส่งไปด้วยเสมอ เพราะถ้าแผนถูกยืนยันแล้ว backend จะสร้างแผนฉบับใหม่
+        // ด้วย insertPlanning ซึ่ง bgtype_id เป็น NOT NULL ไม่มีค่าเริ่มต้น
+        budgetTypeId: this.budgetTypeId
       };
       const rs: any = await this.planningService.updatePlanning(_header, this._uuid);
       if (rs.ok) {
-        this.alertService.success();
+        if (rs.newRevision) {
+          // แผนที่ยืนยันไปแล้วจะไม่ถูกแก้ทับ แต่ถูกเก็บเป็นประวัติแล้วสร้างฉบับใหม่แทน
+          // ฉบับใหม่ต้องยืนยันอีกครั้งเสมอ ถ้าไม่บอก ผู้ใช้จะนึกว่าปุ่มยืนยันไม่ทำงาน
+          this.alertService.success('บันทึกเป็นฉบับแก้ไขใหม่แล้ว',
+            'ฉบับเดิมถูกเก็บเป็นประวัติ ฉบับใหม่มีสถานะ "รอยืนยัน" กรุณากดยืนยันแผนอีกครั้ง');
+        } else {
+          this.alertService.success();
+        }
         this.router.navigate(['/apps/planning']);
       } else {
         this.alertService.error(rs.error);
       }
       this.pmLoading.hide();
+      this.isSaving = false;
     } catch (error) {
       this.alertService.serverError();
       this.pmLoading.hide();
+      this.isSaving = false;
     }
   }
 
@@ -187,8 +216,12 @@ export class PlanningEditComponent implements OnInit {
       const rs: any = await this.planningService.getPlanningTmp(this._uuid, this.query, this.genericType, this.perPage, this.offset);
       if (rs.ok) {
         this.plannings = rs.rows;
+        // total/amount ผ่านตัวกรองของตาราง ใช้กับการแบ่งหน้าเท่านั้น
         this.planningTotal = rs.total;
-        this.totalAmount = rs.amount;
+        // totalAll/amountAll คือยอดของทั้งร่างแผน ใช้แสดงสรุปและใช้ตอนบันทึก
+        // ถ้าใช้ค่าที่ผ่านตัวกรอง หัวแผนจะเก็บยอดของเฉพาะหมวดที่กรองไว้
+        this.planningTotalAll = rs.totalAll;
+        this.totalAmount = rs.amountAll || 0;
       } else {
         this.alertService.error(rs.error);
       }
@@ -310,11 +343,17 @@ export class PlanningEditComponent implements OnInit {
       this.pmLoading.show();
       const rs: any = await this.uploadingService.uploadPlanning(this._uuid, obj.file);
       if (rs.ok) {
-        this.alertService.success();
         this.uploadModal.hide();
         this.getPlanningTmp();
+        // แจ้งเป็นรายแถวว่ามีอะไรตกหล่นบ้าง ไม่ใช่บอกแค่ "สำเร็จ"
+        this.alertService.importResult(rs.imported, rs.skipped);
       } else {
-        this.alertService.error(rs.error);
+        // นำเข้าไม่ได้เลย แต่ถ้ามีรายละเอียดว่าแถวไหนมีปัญหาก็ให้เห็นด้วย
+        if (rs.skipped && rs.skipped.length) {
+          this.alertService.importResult(0, rs.skipped);
+        } else {
+          this.alertService.error(rs.error);
+        }
       }
       this.pmLoading.hide();
     } catch (error) {

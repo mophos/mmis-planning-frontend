@@ -83,8 +83,19 @@ export class UploadingService {
         }
       };
 
-      const url = `${this.url}/planning/excel?uuid=${_uuid}&token=${this.token}`;
+      /**
+       * ส่ง token ทาง header ไม่ใช่ query string
+       *
+       * URL จะไปโผล่ใน access log ของ nginx ประวัติเบราว์เซอร์ และ log ของ proxy
+       * โดย token มีอายุ 1 วัน — ส่งทาง header ไม่มีปัญหานี้
+       * (checkAuth อ่าน Authorization header เป็นลำดับแรกอยู่แล้ว)
+       *
+       * ทำได้เฉพาะที่นี่เพราะเป็น XHR ส่วนหน้ารายงานเปิดใน iframe ตั้ง header ไม่ได้
+       * จึงยังต้องใช้ query string ต่อไป
+       */
+      const url = `${this.url}/planning/excel?uuid=${_uuid}`;
       xhr.open('POST', url, true);
+      xhr.setRequestHeader('Authorization', `Bearer ${this.token}`);
       xhr.send(formData);
     });
   }

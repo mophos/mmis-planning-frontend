@@ -110,6 +110,36 @@ export class DatagridPlanningComponent implements OnInit {
     this.selectedAmount = +this.selectedQty * +this.selectedCost;
   }
 
+  /**
+   * แปลงวันที่เป็นข้อความ โดยคืน null ถ้าไม่มีค่าหรือค่าไม่ใช่วันที่
+   *
+   * ยาที่ไม่เคยมีความเคลื่อนไหวในคลังจะไม่มีวันที่ตัดยอด (เป็น NULL ได้)
+   * ถ้าเอาไปผ่าน moment().format() ตรง ๆ จะได้ข้อความว่า 'Invalid date'
+   * แล้วส่งกลับไปบันทึก MySQL จะปฏิเสธด้วย ER_TRUNCATED_WRONG_VALUE
+   * ทำให้แก้ไขรายการนั้นไม่ได้เลย
+   */
+  toDateText(value: any): any {
+    if (!value) {
+      return null;
+    }
+    const m = moment(value);
+    return m.isValid() ? m.format('YYYY-MM-DD HH:mm:ss') : null;
+  }
+
+  /**
+   * แก้ประมาณการใช้ -> คำนวณประมาณการซื้อใหม่ให้ แล้วผู้ใช้ยังแก้ทับได้อีกที
+   *
+   * ไม่ไปแตะไตรมาส 1-4 โดยตั้งใจ เพราะสองอย่างนี้คนละความหมาย
+   * ประมาณการซื้อเป็นตัวเลขอ้างอิงจากการพยากรณ์ ส่วนไตรมาสคือแผนซื้อจริงที่ผู้ใช้กำหนดเอง
+   * ถ้าผูกให้เปลี่ยนตามกัน ผู้ใช้ที่ตั้งใจแก้แค่ตัวเลขอ้างอิงจะเสียแผนที่วางไว้
+   *
+   * ไม่ให้ติดลบ กรณียอดคงคลังมากกว่าประมาณการใช้ แปลว่าไม่ต้องซื้อเพิ่ม = 0
+   */
+  onInputEstimateQty() {
+    const remain = +this.selectedEstimateQty - +this.selectedStockQty;
+    this.selectedEstimateBuyQty = remain > 0 ? remain : 0;
+  }
+
   onInputSelectedQty() {
     const result = this.selectedQty % 4;
     if (result) {
@@ -191,12 +221,14 @@ export class DatagridPlanningComponent implements OnInit {
     this.selectedConversionQty = item.conversion_qty;
     this.selectedCost = item.unit_cost;
     this.selectedPrimaryUnitId = item.primary_unit_id;
+    // เดิมสองบรรทัดล่างอ่านจาก item.rate_3_year ทั้งคู่ (พิมพ์ผิดแบบ copy-paste)
+    // ทำให้ทุกครั้งที่กดแก้ไขแล้วบันทึก ค่าย้อนหลัง 2 ปี และ 1 ปี ถูกเขียนทับด้วยค่าย้อนหลัง 3 ปี
     this.selectedRate3Year = item.rate_3_year;
-    this.selectedRate2Year = item.rate_3_year;
-    this.selectedRate1Year = item.rate_3_year;
+    this.selectedRate2Year = item.rate_2_year;
+    this.selectedRate1Year = item.rate_1_year;
     this.selectedEstimateQty = item.estimate_qty;
     this.selectedStockQty = item.stock_qty;
-    this.selectedStockDate = moment(item.inventory_date).format('YYYY-MM-DD HH:mm:ss');
+    this.selectedStockDate = this.toDateText(item.inventory_date);
     this.selectedEstimateBuyQty = item.estimate_buy;
     this.selectedQ1 = item.q1;
     this.selectedQ2 = item.q2;
@@ -228,11 +260,13 @@ export class DatagridPlanningComponent implements OnInit {
           this.selectedRate1Year = Math.round(data.sumy1 / this.selectedConversionQty);
           this.selectedEstimateQty = Math.round(data.sumy4 / this.selectedConversionQty);
           this.selectedStockQty = Math.round(data.stock_qty / this.selectedConversionQty);
-          this.selectedStockDate = moment(data.process_date).format('YYYY-MM-DD HH:mm:ss');
+          this.selectedStockDate = this.toDateText(data.process_date);
           this.selectedEstimateBuyQty = Math.round(data.buy_qty / this.selectedConversionQty);
           this.selectedQ1 = Math.round(data.y4q1 / this.selectedConversionQty);
           this.selectedQ2 = Math.round(data.y4q2 / this.selectedConversionQty);
-          this.selectedQ3 = Math.round(data.y4q4 / this.selectedConversionQty);
+          // เดิมบรรทัดนี้อ่าน data.y4q4 (พิมพ์ผิดแบบ copy-paste) ทำให้ไตรมาส 3
+          // ได้ค่าของไตรมาส 4 มาตลอด ทั้งที่ backend ส่ง y4q3 มาให้ครบอยู่แล้ว
+          this.selectedQ3 = Math.round(data.y4q3 / this.selectedConversionQty);
           this.selectedQ4 = Math.round(data.y4q4 / this.selectedConversionQty);
           this.selectedQty = this.selectedQ1 + this.selectedQ2 + this.selectedQ3 + this.selectedQ4;
           this.selectedAmount = this.selectedQty * this.selectedCost;
