@@ -39,14 +39,18 @@
     <clr-dg-cell style="text-align: right;">
       {{ selectedRate1Year | number: '1.0-0' }}
     </clr-dg-cell>
-    <clr-dg-cell style="text-align: right;">
-      {{ selectedEstimateQty | number: '1.0-0' }}
+    <!-- ประมาณการใช้ แก้ได้ · แก้แล้วคำนวณประมาณการซื้อใหม่ให้ -->
+    <clr-dg-cell>
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
+        [(ngModel)]="selectedEstimateQty" pmNumberOnly placeholder="0" (input)="onInputEstimateQty()">
     </clr-dg-cell>
     <clr-dg-cell style="text-align: right;">
       {{ selectedStockQty | number: '1.0-0' }}
     </clr-dg-cell>
-    <clr-dg-cell style="text-align: right;">
-      {{ selectedEstimateBuyQty | number: '1.0-0' }}
+    <!-- ประมาณการซื้อ ระบบคำนวณมาให้ก่อน แล้วผู้ใช้แก้ทับได้ -->
+    <clr-dg-cell>
+      <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"
+        [(ngModel)]="selectedEstimateBuyQty" pmNumberOnly placeholder="0">
     </clr-dg-cell>
     <clr-dg-cell>
       <input type="text" class="wm-edit-box-number" style="background-color: #FFF9C4" [disabled]="!selectedGenericId"

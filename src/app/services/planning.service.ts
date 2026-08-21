@@ -91,8 +91,9 @@ export class PlanningService {
     return rs.json();
   }
 
-  async deletePlanningTmp(tmpId: any) {
-    const rs: any = await this.authHttp.delete(`${this.url}/planning/tmp/${tmpId}`).toPromise();
+  // ต้องส่ง uuid ไปด้วย ฝั่ง backend ใช้ผูกว่ารายการนี้อยู่ในร่างแผนของเราจริง
+  async deletePlanningTmp(tmpId: any, _uuid: any) {
+    const rs: any = await this.authHttp.delete(`${this.url}/planning/tmp/${tmpId}?uuid=${_uuid}`).toPromise();
     return rs.json();
   }
 
@@ -150,6 +151,12 @@ export class PlanningService {
 
   async removePlanging(planningId: any) {
     const rs: any = await this.authHttp.delete(`${this.url}/planning?planningId=${planningId}`).toPromise();
+    return rs.json();
+  }
+
+  // ยืนยันแผนจากหน้ารายการ เปลี่ยนแค่สถานะ ไม่แตะรายละเอียดแผน
+  async confirmPlanning(planningId: any) {
+    const rs: any = await this.authHttp.put(`${this.url}/planning/confirm/${planningId}`, {}).toPromise();
     return rs.json();
   }
 

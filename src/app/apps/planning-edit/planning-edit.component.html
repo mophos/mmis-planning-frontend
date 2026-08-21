@@ -70,7 +70,7 @@
               <label for="countItem">จำนวนรายการ</label>
             </div>
             <div class="col-md-8">
-              <input type="text" class="text-success" id="countItem" readonly value="{{ planningTotal | number }}">
+              <input type="text" class="text-success" id="countItem" readonly value="{{ planningTotalAll | number }}">
             </div>
           </div>
         </div>
@@ -143,10 +143,10 @@
 </clr-tabs>
 
 <div>
-  <button type="button" (click)="confirmPlanning()" class="btn btn-sm btn-primary" [disabled]="!planningYear || !planningName || !planningTotal">
+  <button type="button" (click)="confirmPlanning()" class="btn btn-sm btn-primary" [disabled]="!planningYear || !planningName || !planningTotalAll">
     <clr-icon shape="success-standard"></clr-icon> ยืนยันแผนฯ
   </button>
-  <button type="button" (click)="savePlanning()" class="btn btn-sm btn-success" [disabled]="!planningYear || !planningName || !planningTotal">
+  <button type="button" (click)="savePlanning()" class="btn btn-sm btn-success" [disabled]="isSaving || !planningYear || !planningName || !planningTotalAll">
     <clr-icon shape="floppy"></clr-icon> บันทึกแผนฯ
   </button>
   <button type="button" class="btn btn-sm btn-danger" [routerLink]="['/apps/planning']">
